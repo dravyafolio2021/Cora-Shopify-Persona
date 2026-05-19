@@ -176,7 +176,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-[#F7F7F7] text-[#1a1a1a] font-sans flex flex-col lg:flex-row relative">
       
       {/* 1. MOBILE TOP STICKY HEADER */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-md border-b border-[#E5E5E5] z-50 px-5 flex items-center justify-between shadow-sm">
+      <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-[#E5E5E5] z-50 px-5 flex items-center justify-between shadow-sm">
         <div className="flex items-center text-[#111111] font-bold text-sm tracking-tight gap-1">
           <Sparkles className="w-4 h-4 text-[#111111]" />
           <span>Cora</span>
@@ -540,7 +540,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto pt-20 lg:pt-0 pb-24 lg:pb-0">
+        <main className="flex-1 overflow-y-auto pt-24 lg:pt-0 pb-24 lg:pb-0">
           <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto relative">
             
             {/* Absolute Glassmorphic Notifications Popover for Mobile */}
