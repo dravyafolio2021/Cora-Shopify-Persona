@@ -36,14 +36,13 @@ export default function ChannelsSection() {
     (function() {
       const iframe = document.getElementById('cora-profile-iframe');
       
-      // 1. Try to find active customer ID (Shopify liquid variable or localStorage)
-      let customerId = "{{ customer.id }}";
-      const storedId = localStorage.getItem('cora_storefront_customer_id');
+      // 1. Try to find active customer ID safely (wrapped to prevent Shopify dry-run validation errors)
+      let customerId = "";
+      {% if customer %}
+        customerId = "{{ customer.id }}";
+      {% endif %}
       
-      // Clean Shopify liquid tags if raw liquid wasn't executed
-      if (customerId && (customerId === '' || customerId.includes('{{') || customerId.includes('customer'))) {
-        customerId = null;
-      }
+      const storedId = localStorage.getItem('cora_storefront_customer_id');
       
       if (!customerId && storedId) {
         customerId = storedId;
