@@ -16,6 +16,18 @@ function RegisterDeviceContent() {
   const [subscribing, setSubscribing] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  // Dynamic active device registration states
+  const [isDeviceRegistered, setIsDeviceRegistered] = useState(false);
+  const [deviceEndpoint, setDeviceEndpoint] = useState<string | null>(null);
+  const [unsubscribing, setUnsubscribing] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+    }
+  }, []);
+
   useEffect(() => {
     if (!customerId) {
       setError('Missing customerId parameter');
@@ -23,9 +35,40 @@ function RegisterDeviceContent() {
       return;
     }
 
-    axios.get(`/api/store/customers/${customerId}`)
-      .then(res => {
-        setCustomer(res.data.customer);
+    const checkLocalSubscription = async () => {
+      if ('serviceWorker' in navigator && 'PushManager' in window) {
+        try {
+          const reg = await navigator.serviceWorker.getRegistration();
+          if (reg) {
+            const sub = await reg.pushManager.getSubscription();
+            if (sub) {
+              return sub.endpoint;
+            }
+          }
+        } catch (e) {
+          console.warn('Error checking local push subscription:', e);
+        }
+      }
+      return null;
+    };
+
+    Promise.all([
+      axios.get(`/api/store/customers/${customerId}`),
+      checkLocalSubscription()
+    ])
+      .then(([res, endpoint]) => {
+        const custData = res.data.customer;
+        setCustomer(custData);
+        if (endpoint) {
+          setDeviceEndpoint(endpoint);
+          const subs = Array.isArray(custData?.push_subscription)
+            ? custData.push_subscription
+            : custData?.push_subscription
+              ? [custData.push_subscription]
+              : [];
+          const matched = subs.some((s: any) => s.endpoint === endpoint);
+          setIsDeviceRegistered(matched);
+        }
         setLoading(false);
       })
       .catch(err => {
@@ -120,12 +163,50 @@ function RegisterDeviceContent() {
         }
       });
 
+      // Update states
+      if (subscription?.endpoint) {
+        setDeviceEndpoint(subscription.endpoint);
+        setIsDeviceRegistered(true);
+      }
       setSuccess(true);
     } catch (err: any) {
       console.error(err);
-      alert(`Subscription failed: ${err.message}`);
+      alert(`Subscription failed. Note: If you recently rotated push credentials, please completely clear your browser's site data/cache to reset Chrome's background push service. \n\nDetails: ${err.message}`);
     } finally {
       setSubscribing(false);
+    }
+  };
+
+  const unsubscribeDevice = async () => {
+    if (!deviceEndpoint) return;
+    setUnsubscribing(true);
+    try {
+      // 1. Unsubscribe on backend
+      await axios.post('/api/store/campaigns/unsubscribe', {
+        customerId,
+        endpoint: deviceEndpoint
+      });
+
+      // 2. Unsubscribe locally in browser
+      if ('serviceWorker' in navigator && 'PushManager' in window) {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg) {
+          const sub = await reg.pushManager.getSubscription();
+          if (sub) {
+            await sub.unsubscribe();
+          }
+        }
+      }
+
+      setIsDeviceRegistered(false);
+      setDeviceEndpoint(null);
+      setSuccess(false);
+      alert('This device has been successfully unsubscribed.');
+    } catch (err: any) {
+      console.error(err);
+      alert(`Unsubscription failed: ${err.message}`);
+    } finally {
+      setUnsubscribing(false);
     }
   };
 
@@ -183,13 +264,22 @@ function RegisterDeviceContent() {
             <div>
               <h2 className="text-xl font-bold text-[#111111]">Device Subscribed!</h2>
               <p className="text-xs text-[#6B7280] mt-2 leading-relaxed">
-                Awesome, <span className="font-bold text-[#111111]">{customer?.first_name || 'Skincare Tester'}</span>! This physical phone is now officially synchronized to receive lock-screen check-in reminders.
+                Awesome, <span className="font-bold text-[#111111]">{customer?.first_name || 'Skincare Tester'}</span>! This physical device is now officially synchronized to receive lock-screen check-in reminders.
               </p>
             </div>
             <div className="p-4 bg-purple-50 border border-purple-100 rounded-xl text-left text-xs text-purple-700">
               <p className="font-bold mb-1 flex items-center gap-1"><Sparkles className="w-3.5 h-3.5 fill-purple-700" /> What's next?</p>
               Return to your Cora Admin Console and tap **"Send Test Push"** on this profile to see the real lock-screen alert pop up on this screen!
             </div>
+            
+            <button
+              onClick={unsubscribeDevice}
+              disabled={unsubscribing}
+              className="w-full py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-xl text-xs font-bold hover:bg-red-100 transition-all flex items-center justify-center gap-2"
+            >
+              {unsubscribing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+              ❌ Unsubscribe This Device
+            </button>
           </div>
         ) : (
           <div className="space-y-6">
@@ -199,34 +289,64 @@ function RegisterDeviceContent() {
               </span>
               <h2 className="text-xl font-bold text-[#111111] mt-4">Join Skincare Routine</h2>
               <p className="text-xs text-[#6B7280] mt-2 leading-relaxed">
-                Connect your mobile phone to receive daily skincare routine application reminders and update your daily streak.
+                Connect your device to receive daily skincare routine application reminders and update your daily streak.
               </p>
             </div>
 
-            <div className="p-4 bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl text-left text-xs space-y-3">
-              <div className="flex items-start gap-2.5">
-                <Shield className="w-4 h-4 text-purple-600 mt-0.5" />
-                <div>
-                  <p className="font-bold text-[#111111]">Privacy Protected</p>
-                  <p className="text-[#6B7280] mt-0.5">We only store standard anonymous browser token IDs to route notifications.</p>
+            {isDeviceRegistered ? (
+              <div className="p-4 bg-green-50 border border-green-100 rounded-2xl text-left text-xs space-y-3">
+                <div className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5" />
+                  <div>
+                    <p className="font-bold text-green-800">Linked & Synchronised</p>
+                    <p className="text-green-700 mt-0.5">This laptop/device is already registered to receive active push notifications for this profile!</p>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            {subscribing ? (
-              <button
-                disabled
-                className="w-full py-3.5 bg-[#111111] text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2"
-              >
-                <Loader2 className="w-4 h-4 animate-spin" /> Synchronizing device...
-              </button>
             ) : (
-              <button
-                onClick={requestPermissionAndSubscribe}
-                className="w-full py-3.5 bg-[#111111] text-white rounded-xl text-sm font-bold hover:bg-[#333333] transition-all shadow-md active:scale-[0.98]"
-              >
-                🔔 Subscribe Phone
-              </button>
+              <div className="p-4 bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl text-left text-xs space-y-3">
+                <div className="flex items-start gap-2.5">
+                  <Shield className="w-4 h-4 text-purple-600 mt-0.5" />
+                  <div>
+                    <p className="font-bold text-[#111111]">Privacy Protected</p>
+                    <p className="text-[#6B7280] mt-0.5">We only store standard anonymous browser token IDs to route notifications.</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isDeviceRegistered ? (
+              <div className="space-y-3">
+                <div className="p-3 bg-purple-50 border border-purple-100 rounded-xl text-left text-xs text-purple-700">
+                  You are all set! Refreshing this link dynamically confirms that **this specific device is connected** to the database.
+                </div>
+                <button
+                  onClick={unsubscribeDevice}
+                  disabled={unsubscribing}
+                  className="w-full py-3.5 bg-red-600 text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-all flex items-center justify-center gap-2"
+                >
+                  {unsubscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  ❌ Unsubscribe This Device
+                </button>
+              </div>
+            ) : (
+              <>
+                {subscribing ? (
+                  <button
+                    disabled
+                    className="w-full py-3.5 bg-[#111111] text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2"
+                  >
+                    <Loader2 className="w-4 h-4 animate-spin" /> Synchronizing device...
+                  </button>
+                ) : (
+                  <button
+                    onClick={requestPermissionAndSubscribe}
+                    className="w-full py-3.5 bg-[#111111] text-white rounded-xl text-sm font-bold hover:bg-[#333333] transition-all shadow-md active:scale-[0.98]"
+                  >
+                    {isMobile ? '🔔 Subscribe Phone' : '🔔 Subscribe Laptop'}
+                  </button>
+                )}
+              </>
             )}
 
             {permissionState === 'denied' && (
@@ -240,6 +360,7 @@ function RegisterDeviceContent() {
       </div>
     </div>
   );
+
 }
 
 export default function RegisterDevicePage() {
