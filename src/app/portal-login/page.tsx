@@ -32,6 +32,15 @@ export default function PortalLoginPage() {
         localStorage.setItem('cora_customer_id', customer.shopify_customer_id);
         localStorage.setItem('cora_customer_name', `${customer.first_name} ${customer.last_name}`);
         
+        // Dispatch postMessage event to parent Shopify storefront context
+        if (typeof window !== 'undefined' && window.parent) {
+          window.parent.postMessage({
+            type: 'cora-login-success',
+            customerId: customer.shopify_customer_id,
+            customerName: `${customer.first_name} ${customer.last_name}`
+          }, '*');
+        }
+
         // Smoothly redirect them to their device registry dashboard!
         setTimeout(() => {
           router.push(`/register-device?customerId=${customer.shopify_customer_id}`);

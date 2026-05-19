@@ -1,17 +1,25 @@
 /**
  * Cora Skin Portal - Branded Storefront Sync & Skincare Dashboard Widget
- * Dynamic customer notifications and skincare routine tracking widget.
+ * Dynamic customer notifications, skincare routine tracking, and embedded login console.
  */
 (function() {
-  // 1. Extract current customer ID from the script tag
+  // 1. Extract current customer ID from the script tag or localStorage
   const scriptTag = document.currentScript || document.querySelector('script[src*="cora-portal.js"]');
-  const customerId = scriptTag ? scriptTag.getAttribute('data-customer-id') : null;
+  let customerId = scriptTag ? scriptTag.getAttribute('data-customer-id') : null;
   const portalUrl = 'https://corapersona.vercel.app';
   const backendUrl = 'https://cora-persona-backend.vercel.app';
 
-  if (!customerId || customerId === '' || customerId.includes('shopify_customer_id')) {
-    console.warn('Cora Portal Widget: Missing valid Shopify customer ID. Sync button will not display.');
-    return;
+  // Check if there is an active logged-in customer session stored in this browser
+  const storedCustomerId = localStorage.getItem('cora_storefront_customer_id');
+  
+  // Clean up default template values
+  if (customerId && (customerId === '' || customerId.includes('shopify_customer_id'))) {
+    customerId = null;
+  }
+
+  // Use stored customer session as a persistent fallback
+  if (!customerId && storedCustomerId) {
+    customerId = storedCustomerId;
   }
 
   // 2. Inject CSS Styles for Floating Badge and Tabbed Dashboard
@@ -280,7 +288,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
     </svg>
-    <span>Daily Routine Sync</span>
+    <span>Daily Skincare Sync</span>
     <span class="streak-indicator" style="display:none;">0</span>
   `;
   document.body.appendChild(badge);
@@ -320,7 +328,7 @@
           <div class="cora-card">
             <div class="cora-card-title">My Skincare Persona</div>
             <div class="persona-badge" id="cora-persona-badge">
-              ✨ Loading Profile...
+              🔑 Authenticating Profile...
             </div>
             <div style="margin-top: 10px; font-size: 12px; color: #4B5563;">
               Skin Type: <b id="cora-skin-type">Loading...</b><br/>
@@ -354,6 +362,15 @@
 
   // 6. Fetch Public Sync Details from Backend to hydrate Dashboard
   function hydrateWidget() {
+    if (!customerId) {
+      // If customer is not authenticated, show a prompt inside the profile badge
+      document.getElementById('cora-streak-text').textContent = `Authentication Needed`;
+      document.getElementById('cora-persona-badge').innerHTML = `🔑 Tap 'Device Sync' to log in`;
+      document.getElementById('cora-skin-type').textContent = 'N/A';
+      document.getElementById('cora-concerns').textContent = 'N/A';
+      return;
+    }
+
     fetch(`${backendUrl}/api/public/customer/${customerId}`)
       .then(res => res.json())
       .then(data => {
@@ -402,12 +419,19 @@
 
   badge.addEventListener('click', () => {
     modal.classList.add('active');
-    hydrateWidget(); // Hydrate dynamic streak/persona whenever they open the modal!
+    hydrateWidget();
     
-    // Load device sync iframe in the background
+    // Load appropriate page in the iframe
     const iframe = modal.querySelector('#cora-portal-iframe');
-    if (iframe.src === 'about:blank' || iframe.src === '') {
+    if (customerId) {
+      // If customer is logged in, show device subscription console
       iframe.src = `${portalUrl}/register-device?customerId=${customerId}`;
+    } else {
+      // If NOT logged in, show custom sign-in page directly embedded inside the storefront widget!
+      iframe.src = `${portalUrl}/portal-login`;
+      
+      // Auto-toggle to Device Sync tab so they can see the sign-in form immediately
+      modal.querySelector('[data-tab="sync"]').click();
     }
   });
 
@@ -431,5 +455,27 @@
       const targetPanel = modal.querySelector(`#cora-panel-${tab.getAttribute('data-tab')}`);
       if (targetPanel) targetPanel.classList.add('active');
     });
+  });
+
+  // 8. Listen for dynamic postMessage success events from the embedded login iframe!
+  window.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'cora-login-success') {
+      const loggedInId = event.data.customerId;
+      
+      // Persist the Shopify customer session inside the browser storefront context
+      customerId = loggedInId;
+      localStorage.setItem('cora_storefront_customer_id', loggedInId);
+      
+      // Re-hydrate the Skincare Dashboard and redirect the iframe to the active device status checker
+      hydrateWidget();
+      
+      const iframe = modal.querySelector('#cora-portal-iframe');
+      iframe.src = `${portalUrl}/register-device?customerId=${loggedInId}`;
+      
+      // Smoothly switch them back to the active Skincare Dashboard!
+      setTimeout(() => {
+        modal.querySelector('[data-tab="dashboard"]').click();
+      }, 1000);
+    }
   });
 })();
