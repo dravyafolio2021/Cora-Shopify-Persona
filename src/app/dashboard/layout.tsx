@@ -20,7 +20,11 @@ import {
   ShoppingBag,
   Smartphone,
   Bell,
-  Check
+  Check,
+  Clock,
+  Activity,
+  Eye,
+  XCircle
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -30,6 +34,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMenuSheetOpen, setIsMenuSheetOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  // Helper to render activity vector icons instead of emojis
+  const renderActivityIcon = (type: string) => {
+    const iconClass = "w-3.5 h-3.5";
+    switch (type) {
+      case 'subscribe':
+        return <Smartphone className={`${iconClass} text-green-600`} />;
+      case 'unsubscribe':
+        return <XCircle className={`${iconClass} text-red-600`} />;
+      case 'checkin_applied':
+        return <Check className={`${iconClass} text-emerald-600`} />;
+      case 'checkin_later':
+        return <Clock className={`${iconClass} text-amber-600`} />;
+      case 'checkin_opened':
+        return <Eye className={`${iconClass} text-blue-600`} />;
+      case 'trigger_push':
+        return <Sparkles className={`${iconClass} text-purple-600`} />;
+      default:
+        return <Bell className={`${iconClass} text-gray-500`} />;
+    }
+  };
 
   // Real-time admin notifications state
   const [activities, setActivities] = useState<any[]>([]);
@@ -473,14 +498,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       </div>
                     ) : (
                       activities.map((act: any) => {
-                        let icon = '🔔';
-                        if (act.activity_type === 'subscribe') icon = '📱';
-                        else if (act.activity_type === 'unsubscribe') icon = '❌';
-                        else if (act.activity_type === 'checkin_applied') icon = '✅';
-                        else if (act.activity_type === 'checkin_later') icon = '⏰';
-                        else if (act.activity_type === 'checkin_opened') icon = '👁️';
-                        else if (act.activity_type === 'trigger_push') icon = '⚡';
-
                         // Check if read
                         const isRead = JSON.parse(localStorage.getItem('admin_read_notifications') || '[]').includes(act.id);
 
@@ -490,8 +507,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             onClick={() => handleNotificationClick(act)}
                             className={`p-3.5 hover:bg-[#FAFAFA] transition-colors cursor-pointer flex gap-3 ${!isRead ? 'bg-purple-50/40' : ''}`}
                           >
-                            <span className="w-6 h-6 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center flex-shrink-0 text-xs">
-                              {icon}
+                            <span className="w-6 h-6 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center flex-shrink-0">
+                              {renderActivityIcon(act.activity_type)}
                             </span>
                             <div className="flex-1 min-w-0">
                               <p className={`font-semibold text-[#111111] truncate ${!isRead ? 'font-bold' : ''}`}>
@@ -546,14 +563,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     </div>
                   ) : (
                     activities.map((act: any) => {
-                      let icon = '🔔';
-                      if (act.activity_type === 'subscribe') icon = '📱';
-                      else if (act.activity_type === 'unsubscribe') icon = '❌';
-                      else if (act.activity_type === 'checkin_applied') icon = '✅';
-                      else if (act.activity_type === 'checkin_later') icon = '⏰';
-                      else if (act.activity_type === 'checkin_opened') icon = '👁️';
-                      else if (act.activity_type === 'trigger_push') icon = '⚡';
-
                       const isRead = JSON.parse(localStorage.getItem('admin_read_notifications') || '[]').includes(act.id);
 
                       return (
@@ -562,8 +571,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                           onClick={() => handleNotificationClick(act)}
                           className={`p-3.5 hover:bg-[#FAFAFA] transition-colors cursor-pointer flex gap-3 ${!isRead ? 'bg-purple-50/40' : ''}`}
                         >
-                          <span className="w-6 h-6 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center flex-shrink-0 text-xs">
-                            {icon}
+                          <span className="w-6 h-6 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center flex-shrink-0">
+                            {renderActivityIcon(act.activity_type)}
                           </span>
                           <div className="flex-1 min-w-0">
                             <p className="font-bold text-[#111111] truncate">

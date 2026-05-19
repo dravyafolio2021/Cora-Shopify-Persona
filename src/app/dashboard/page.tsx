@@ -132,36 +132,59 @@ export default function OverviewPage() {
         />
       </div>
 
-      {/* SaaS Dense Tab Navigation */}
-      <div className="border-b border-[#E5E5E5] flex space-x-6 overflow-x-auto scrollbar-none">
+      {/* SaaS Dense Ultra-Responsive Tab Navigation */}
+      <div className="bg-[#EAEAEA] p-1.5 rounded-2xl flex space-x-1 overflow-x-auto scrollbar-none md:bg-transparent md:p-0 md:rounded-none md:border-b md:border-[#E5E5E5] md:space-x-6">
         <button 
           onClick={() => setActiveTab('opportunities')}
-          className={`py-3 text-sm font-semibold tracking-tight border-b-2 transition-all flex items-center gap-2 ${activeTab === 'opportunities' ? 'border-[#111111] text-[#111111]' : 'border-transparent text-[#9CA3AF] hover:text-[#111111]'}`}
+          className={`py-2 px-3 md:py-3 md:px-0 text-xs md:text-sm font-bold tracking-tight rounded-xl md:rounded-none md:border-b-2 transition-all flex items-center justify-center gap-1.5 flex-1 md:flex-initial whitespace-nowrap ${
+            activeTab === 'opportunities' 
+              ? 'bg-white text-[#111111] shadow-sm md:bg-transparent md:shadow-none md:border-[#111111]' 
+              : 'text-[#6B7280] hover:text-[#111111] md:border-transparent md:text-[#9CA3AF]'
+          }`}
         >
-          <Sparkles className="w-4 h-4" />
-          Revenue Opportunities
-          <span className="ml-1 text-xs bg-[#111111] text-white px-2 py-0.5 rounded-full">{recommendations.length}</span>
+          <Sparkles className="w-3.5 h-3.5 flex-shrink-0" />
+          <span className="hidden sm:inline">Revenue Opportunities</span>
+          <span className="sm:hidden">Opportunities</span>
+          <span className="ml-1 text-[9px] font-extrabold bg-[#111111] text-white px-1.5 py-0.2 rounded-full">{recommendations.length}</span>
         </button>
+        
         <button 
           onClick={() => setActiveTab('cohorts')}
-          className={`py-3 text-sm font-semibold tracking-tight border-b-2 transition-all flex items-center gap-2 ${activeTab === 'cohorts' ? 'border-[#111111] text-[#111111]' : 'border-transparent text-[#9CA3AF] hover:text-[#111111]'}`}
+          className={`py-2 px-3 md:py-3 md:px-0 text-xs md:text-sm font-bold tracking-tight rounded-xl md:rounded-none md:border-b-2 transition-all flex items-center justify-center gap-1.5 flex-1 md:flex-initial whitespace-nowrap ${
+            activeTab === 'cohorts' 
+              ? 'bg-white text-[#111111] shadow-sm md:bg-transparent md:shadow-none md:border-[#111111]' 
+              : 'text-[#6B7280] hover:text-[#111111] md:border-transparent md:text-[#9CA3AF]'
+          }`}
         >
-          <Layers className="w-4 h-4" />
-          Cohort & LTV Analysis
+          <Layers className="w-3.5 h-3.5 flex-shrink-0" />
+          <span className="hidden sm:inline">Cohort & LTV Analysis</span>
+          <span className="sm:hidden">Cohorts</span>
         </button>
+        
         <button 
           onClick={() => setActiveTab('products')}
-          className={`py-3 text-sm font-semibold tracking-tight border-b-2 transition-all flex items-center gap-2 ${activeTab === 'products' ? 'border-[#111111] text-[#111111]' : 'border-transparent text-[#9CA3AF] hover:text-[#111111]'}`}
+          className={`py-2 px-3 md:py-3 md:px-0 text-xs md:text-sm font-bold tracking-tight rounded-xl md:rounded-none md:border-b-2 transition-all flex items-center justify-center gap-1.5 flex-1 md:flex-initial whitespace-nowrap ${
+            activeTab === 'products' 
+              ? 'bg-white text-[#111111] shadow-sm md:bg-transparent md:shadow-none md:border-[#111111]' 
+              : 'text-[#6B7280] hover:text-[#111111] md:border-transparent md:text-[#9CA3AF]'
+          }`}
         >
-          <ShoppingBag className="w-4 h-4" />
-          Product Repeat Performance
+          <ShoppingBag className="w-3.5 h-3.5 flex-shrink-0" />
+          <span className="hidden sm:inline">Product Repeat Performance</span>
+          <span className="sm:hidden">Products</span>
         </button>
+        
         <button 
           onClick={() => setActiveTab('sales')}
-          className={`py-3 text-sm font-semibold tracking-tight border-b-2 transition-all flex items-center gap-2 ${activeTab === 'sales' ? 'border-[#111111] text-[#111111]' : 'border-transparent text-[#9CA3AF] hover:text-[#111111]'}`}
+          className={`py-2 px-3 md:py-3 md:px-0 text-xs md:text-sm font-bold tracking-tight rounded-xl md:rounded-none md:border-b-2 transition-all flex items-center justify-center gap-1.5 flex-1 md:flex-initial whitespace-nowrap ${
+            activeTab === 'sales' 
+              ? 'bg-white text-[#111111] shadow-sm md:bg-transparent md:shadow-none md:border-[#111111]' 
+              : 'text-[#6B7280] hover:text-[#111111] md:border-transparent md:text-[#9CA3AF]'
+          }`}
         >
-          <Activity className="w-4 h-4" />
-          Order & Sales Dynamics
+          <Activity className="w-3.5 h-3.5 flex-shrink-0" />
+          <span className="hidden sm:inline">Order & Sales Dynamics</span>
+          <span className="sm:hidden">Sales</span>
         </button>
       </div>
 

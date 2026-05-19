@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, ShoppingBag, Mail, Phone, MapPin, Calendar, Bell, Copy, Check, Sparkles, Loader2, Send } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Mail, Phone, MapPin, Calendar, Bell, Copy, Check, Sparkles, Loader2, Send, Smartphone, XCircle, Clock, Eye } from 'lucide-react';
 import { PERSONA_META, PERSONA_COLORS, PERSONA_ICONS } from '@/lib/personas';
 
 export default function CustomerDetailPage() {
@@ -330,33 +330,34 @@ export default function CustomerDetailPage() {
         ) : (
           <div className="relative border-l border-purple-100 ml-4 pl-6 space-y-6">
             {activityData.activities.map((act: any) => {
-              let icon = '🔔';
+              let iconComponent = <Bell className="w-3.5 h-3.5 text-purple-600" />;
               let badgeBg = 'bg-purple-50 text-purple-600 border-purple-100';
+              
               if (act.activity_type === 'subscribe') {
-                icon = '📱';
+                iconComponent = <Smartphone className="w-3.5 h-3.5 text-green-700" />;
                 badgeBg = 'bg-green-50 text-green-700 border-green-100';
               } else if (act.activity_type === 'unsubscribe') {
-                icon = '❌';
+                iconComponent = <XCircle className="w-3.5 h-3.5 text-red-700" />;
                 badgeBg = 'bg-red-50 text-red-700 border-red-100';
               } else if (act.activity_type === 'checkin_applied') {
-                icon = '✅';
+                iconComponent = <Check className="w-3.5 h-3.5 text-emerald-700" />;
                 badgeBg = 'bg-emerald-50 text-emerald-700 border-emerald-100';
               } else if (act.activity_type === 'checkin_later') {
-                icon = '⏰';
+                iconComponent = <Clock className="w-3.5 h-3.5 text-amber-700" />;
                 badgeBg = 'bg-amber-50 text-amber-700 border-amber-100';
               } else if (act.activity_type === 'checkin_opened') {
-                icon = '👁️';
+                iconComponent = <Eye className="w-3.5 h-3.5 text-blue-700" />;
                 badgeBg = 'bg-blue-50 text-blue-700 border-blue-100';
               } else if (act.activity_type === 'trigger_push') {
-                icon = '⚡';
+                iconComponent = <Sparkles className="w-3.5 h-3.5 text-purple-700" />;
                 badgeBg = 'bg-purple-50 text-purple-700 border-purple-100';
               }
 
               return (
                 <div key={act.id} className="relative group">
                   {/* Timeline dot */}
-                  <span className={`absolute -left-10 top-0.5 w-7 h-7 rounded-full flex items-center justify-center text-xs border ${badgeBg} shadow-sm z-10 transition-transform group-hover:scale-110`}>
-                    {icon}
+                  <span className={`absolute -left-[38px] top-0.5 w-7 h-7 rounded-full flex items-center justify-center border ${badgeBg} shadow-sm z-10 transition-transform group-hover:scale-110`}>
+                    {iconComponent}
                   </span>
                   
                   <div>
