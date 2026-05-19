@@ -22,28 +22,54 @@ export default function ChannelsSection() {
 
   const profileLiquid = `<!-- Cora Synced Luxury Customer Profile Page Embed -->
 <div class="page-width" style="padding: 40px 0;">
-  {% if customer %}
-    <!-- Locked sync session: Render the responsive custom skincare profile page -->
+  <div id="cora-profile-container">
+    <!-- Embedded custom portal login / dashboard view -->
     <iframe 
-      src="https://corapersona.vercel.app/customer-profile?customerId={{ customer.id }}" 
+      id="cora-profile-iframe"
+      src="https://corapersona.vercel.app/portal-login" 
       style="width: 100%; height: 800px; border: none; border-radius: 24px; background: transparent; box-shadow: 0 4px 30px rgba(0,0,0,0.02);"
       loading="lazy">
     </iframe>
-  {% else %}
-    <!-- Unauthenticated guest: Professional login redirect card -->
-    <div style="max-width: 480px; margin: 40px auto; text-align: center; padding: 40px; background: #FFFFFF; border-radius: 24px; border: 1px solid #E5E7EB; box-shadow: 0 4px 30px rgba(0,0,0,0.02); font-family: sans-serif;">
-      <div style="width: 56px; height: 56px; background: #F3F4F6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#111111" style="width: 24px; height: 24px;">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-        </svg>
-      </div>
-      <h2 style="font-size: 18px; font-weight: 800; color: #111111; margin: 0;">Access Your Skincare Portal</h2>
-      <p style="font-size: 13px; color: #6B7280; margin: 8px 0 24px; line-height: 1.5;">Please log in to your store account to view your live skincare streaks and active routines.</p>
-      <a href="/account/login" style="display: inline-block; padding: 12px 32px; background: #111111; color: #FFFFFF; font-weight: bold; text-decoration: none; border-radius: 12px; font-size: 13px; transition: background 0.2s;">
-        Sign In to Account
-      </a>
-    </div>
-  {% endif %}
+  </div>
+
+  <script>
+    (function() {
+      const iframe = document.getElementById('cora-profile-iframe');
+      
+      // 1. Try to find active customer ID (Shopify liquid variable or localStorage)
+      let customerId = "{{ customer.id }}";
+      const storedId = localStorage.getItem('cora_storefront_customer_id');
+      
+      // Clean Shopify liquid tags if raw liquid wasn't executed
+      if (customerId && (customerId === '' || customerId.includes('{{') || customerId.includes('customer'))) {
+        customerId = null;
+      }
+      
+      if (!customerId && storedId) {
+        customerId = storedId;
+      }
+
+      // 2. Load the custom profile if authenticated; otherwise, keep portal-login loaded
+      if (customerId) {
+        iframe.src = "https://corapersona.vercel.app/customer-profile?customerId=" + customerId;
+      }
+
+      // 3. Listen for postMessage updates from our custom embedded iframe
+      window.addEventListener('message', function(event) {
+        if (event.data && event.data.type === 'cora-login-success') {
+          const loggedInId = event.data.customerId;
+          localStorage.setItem('cora_storefront_customer_id', loggedInId);
+          
+          // Smooth transition to the custom skincare dashboard
+          iframe.src = "https://corapersona.vercel.app/customer-profile?customerId=" + loggedInId;
+        }
+        if (event.data && event.data.type === 'cora-logout-success') {
+          localStorage.removeItem('cora_storefront_customer_id');
+          iframe.src = "https://corapersona.vercel.app/portal-login";
+        }
+      });
+    })();
+  </script>
 </div>`;
 
   const handleCopyScript = () => {
