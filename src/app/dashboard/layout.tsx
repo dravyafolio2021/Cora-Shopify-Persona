@@ -176,7 +176,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-[#F7F7F7] text-[#1a1a1a] font-sans flex flex-col lg:flex-row relative">
       
       {/* 1. MOBILE TOP STICKY HEADER */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-md border-b border-[#E5E5E5] z-45 px-5 flex items-center justify-between shadow-sm">
+      <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-md border-b border-[#E5E5E5] z-50 px-5 flex items-center justify-between shadow-sm">
         <div className="flex items-center text-[#111111] font-bold text-sm tracking-tight gap-1">
           <Sparkles className="w-4 h-4 text-[#111111]" />
           <span>Cora</span>
@@ -263,7 +263,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* 3. MOBILE APP NATIVE SLIDE-UP BOTTOM SHEET */}
       <div 
-        className={`fixed inset-0 z-50 lg:hidden transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[100] lg:hidden transition-opacity duration-300 ${
           isMenuSheetOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
