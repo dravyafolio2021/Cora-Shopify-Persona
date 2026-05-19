@@ -1,0 +1,16 @@
+{
+  "stores": {
+    "dev_user": {
+      "domain": "ekg7ga-00.myshopify.com",
+      "accessToken": "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",
+      "shopName": "Bhutri Essentials",
+      "connectedAt": "2026-05-17T06:14:56.088Z"
+    },
+    "user_3DnTfxSpxO8pfCK3qGjnVc3O0JG": {
+      "domain": "ekg7ga-00.myshopify.com",
+      "accessToken": "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",
+      "shopName": "Bhutri Essentials",
+      "connectedAt": "2026-05-17T09:52:37.289Z"
+    }
+  }
+}
