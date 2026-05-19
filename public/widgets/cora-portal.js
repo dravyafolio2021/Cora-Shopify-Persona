@@ -12,13 +12,23 @@
   // Check if there is an active logged-in customer session stored in this browser
   const storedCustomerId = localStorage.getItem('cora_storefront_customer_id');
   
-  // Clean up default template values
-  if (customerId && (customerId === '' || customerId.includes('shopify_customer_id'))) {
+  // Clean up default Liquid template placeholder values
+  if (customerId && (
+    customerId === '' || 
+    customerId.includes('shopify_customer_id') || 
+    customerId.includes('customer.id') || 
+    customerId.includes('{{') || 
+    customerId.includes('checkout')
+  )) {
     customerId = null;
   }
 
-  // Use stored customer session as a persistent fallback
-  if (!customerId && storedCustomerId) {
+  // --- AUTO-LOGIN LOGIC ON ORDER PLACEMENT OR ACTIVE SESSION ---
+  // If a valid Shopify Customer ID is dynamically supplied by the storefront theme 
+  // (e.g. they are logged in or just placed an order!), we auto-log them into Cora!
+  if (customerId && customerId !== storedCustomerId) {
+    localStorage.setItem('cora_storefront_customer_id', customerId);
+  } else if (!customerId && storedCustomerId) {
     customerId = storedCustomerId;
   }
 
@@ -83,13 +93,13 @@
       pointer-events: auto;
     }
     #cora-portal-container {
-      width: 460px;
-      height: 620px;
+      width: 440px;
+      height: 580px;
       max-width: 90%;
       max-height: 90%;
       background: #F9FAFB;
       border-radius: 24px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
       border: 1px solid #E5E7EB;
       overflow: hidden;
       display: flex;
@@ -129,6 +139,7 @@
       padding: 24px 24px 16px 24px;
       background: white;
       border-bottom: 1px solid #E5E7EB;
+      transition: all 0.3s ease;
     }
     .cora-header h3 {
       margin: 0;
@@ -150,6 +161,7 @@
       padding: 4px;
       border-radius: 12px;
       margin-top: 12px;
+      transition: all 0.3s ease;
     }
     .cora-tab-btn {
       flex: 1;
@@ -188,6 +200,7 @@
       width: 100%;
       height: 100%;
       border: none;
+      background: #F9FAFB;
     }
     .cora-dashboard {
       padding: 24px;
@@ -360,16 +373,21 @@
   `;
   document.body.appendChild(modal);
 
+  const headerEl = modal.querySelector('.cora-header');
+  const tabsEl = modal.querySelector('.cora-tabs');
+
   // 6. Fetch Public Sync Details from Backend to hydrate Dashboard
   function hydrateWidget() {
     if (!customerId) {
-      // If customer is not authenticated, show a prompt inside the profile badge
-      document.getElementById('cora-streak-text').textContent = `Authentication Needed`;
-      document.getElementById('cora-persona-badge').innerHTML = `🔑 Tap 'Device Sync' to log in`;
-      document.getElementById('cora-skin-type').textContent = 'N/A';
-      document.getElementById('cora-concerns').textContent = 'N/A';
+      // If customer is not logged in, hide tabs & headers to keep it minimal like a standard widget!
+      if (headerEl) headerEl.style.display = 'none';
+      if (tabsEl) tabsEl.style.display = 'none';
       return;
     }
+
+    // If logged in, restore clean styling
+    if (headerEl) headerEl.style.display = 'block';
+    if (tabsEl) tabsEl.style.display = 'flex';
 
     fetch(`${backendUrl}/api/public/customer/${customerId}`)
       .then(res => res.json())
@@ -409,7 +427,7 @@
       .catch(err => console.warn('Cora Portal Widget: Failed to sync latest backend persona details:', err));
   }
 
-  // Hydrate once immediately
+  // Hydrate once immediately on page load
   hydrateWidget();
 
   // 7. Modal & Tab toggling Logic
@@ -426,11 +444,10 @@
     if (customerId) {
       // If customer is logged in, show device subscription console
       iframe.src = `${portalUrl}/register-device?customerId=${customerId}`;
+      modal.querySelector('[data-tab="dashboard"]').click();
     } else {
-      // If NOT logged in, show custom sign-in page directly embedded inside the storefront widget!
+      // If NOT logged in, show custom minimal sign-in page
       iframe.src = `${portalUrl}/portal-login`;
-      
-      // Auto-toggle to Device Sync tab so they can see the sign-in form immediately
       modal.querySelector('[data-tab="sync"]').click();
     }
   });

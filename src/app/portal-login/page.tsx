@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { Bell, Sparkles, Loader2, Key, ArrowRight, ShieldCheck, Heart } from 'lucide-react';
@@ -12,6 +12,13 @@ export default function PortalLoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [isIframe, setIsIframe] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.self !== window.top) {
+      setIsIframe(true);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,6 +60,92 @@ export default function PortalLoginPage() {
     }
   };
 
+  // 1. Render Ultra-Minimal Native Widget Login Form inside Shopify Iframe
+  if (isIframe) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center px-6 py-4 font-sans select-none">
+        <div className="w-full max-w-[400px] bg-white rounded-2xl p-6 border border-slate-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] relative">
+          
+          {/* Flat Form Header */}
+          <div className="text-center mb-6">
+            <h1 className="text-base font-extrabold text-slate-900 tracking-tight">Sync Skincare Journey</h1>
+            <p className="text-[11px] text-slate-500 mt-1 max-w-[260px] mx-auto leading-relaxed">
+              Log in using your Shopify email or phone to sync your active recommendations and routine strengths.
+            </p>
+          </div>
+
+          {/* Alert messages */}
+          {error && (
+            <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200/60 text-red-700 text-[11px] text-center leading-relaxed">
+              ⚠️ {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200/60 text-emerald-700 text-[11px] text-center flex flex-col items-center gap-1">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 animate-bounce" />
+              <span>Authentication Successful! Loading routines...</span>
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            
+            {/* Input 1 */}
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-0.5">Shopify Email or Phone</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. customer@bhutri.com"
+                value={emailOrPhone}
+                onChange={(e) => setEmailOrPhone(e.target.value)}
+                disabled={loading || success}
+                className="w-full h-11 px-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-950 text-xs placeholder-slate-400 focus:border-purple-600 focus:ring-1 focus:ring-purple-600/30 outline-none transition-all"
+              />
+            </div>
+
+            {/* Input 2 */}
+            <div className="space-y-1">
+              <div className="flex justify-between items-center pl-0.5">
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Password</label>
+                <span className="text-[9px] font-bold text-purple-600 cursor-pointer hover:text-purple-500 transition-colors">Forgot?</span>
+              </div>
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading || success}
+                className="w-full h-11 px-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-950 text-xs placeholder-slate-400 focus:border-purple-600 focus:ring-1 focus:ring-purple-600/30 outline-none transition-all"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading || success}
+              className="w-full h-11 mt-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" /> Syncing Account...
+                </>
+              ) : (
+                <>
+                  <span>Verify Sync Connection</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </>
+              )}
+            </button>
+
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. Render Full Page Glassmorphic Luxury Theme (Fallback)
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col justify-between relative overflow-hidden font-sans select-none selection:bg-purple-500/30">
       
