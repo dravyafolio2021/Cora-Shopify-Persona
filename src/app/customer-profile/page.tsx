@@ -48,6 +48,10 @@ function CustomerProfileContent() {
   const [skinType, setSkinType] = useState('Dry');
   const [concerns, setConcerns] = useState<string[]>([]);
   const [recommendations, setRecommendations] = useState<any[]>([]);
+  
+  // Purchases & habit logging check-in history
+  const [purchases, setPurchases] = useState<any[]>([]);
+  const [checkins, setCheckins] = useState<any[]>([]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -96,6 +100,8 @@ function CustomerProfileContent() {
         setSkinType(infoData.skin_type || 'Dry');
         setConcerns(infoData.concerns || []);
         setRecommendations(infoData.recommendations || []);
+        setPurchases(infoData.purchases || []);
+        setCheckins(infoData.checkins || []);
 
         if (endpoint) {
           setDeviceEndpoint(endpoint);
@@ -343,7 +349,7 @@ function CustomerProfileContent() {
             
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 shadow-inner">
-                <Flame className="w-6 h-6 animate-pulse" />
+                <Flame className="w-6 h-6" />
               </div>
               <div>
                 <h4 className="text-xl font-black text-slate-900 leading-none">{streak} Day Streak</h4>
@@ -411,6 +417,49 @@ function CustomerProfileContent() {
                 )}
               </div>
             )}
+          </div>
+
+          {/* Routine Check-In History */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
+            <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+              <Calendar className="w-3 h-3 text-slate-400" /> Routine Check-In History
+            </h3>
+
+            <div className="space-y-3 max-h-[260px] overflow-y-auto pr-1">
+              {checkins.length > 0 ? (
+                checkins.map((checkin: any, idx: number) => (
+                  <div 
+                    key={checkin.id || idx} 
+                    className="p-3 border border-slate-100 rounded-xl bg-white flex items-center justify-between gap-3 text-[10px]"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-bold text-slate-800 truncate">
+                        {checkin.product_title || 'Daily Skincare'}
+                      </p>
+                      <p className="text-[9px] text-slate-400 font-semibold mt-0.5">
+                        {checkin.scheduled_at ? new Date(checkin.scheduled_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Today'}
+                      </p>
+                    </div>
+                    
+                    <div>
+                      {checkin.responded ? (
+                        <span className="px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-[9px] font-bold text-emerald-700 uppercase tracking-wider flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Done
+                        </span>
+                      ) : (
+                        <span className="px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200 text-[9px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                          <XCircle className="w-3 h-3 text-slate-400" /> Missed
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-4">
+                  <p className="text-[10px] text-slate-400 font-semibold italic">No check-in responses recorded yet.</p>
+                </div>
+              )}
+            </div>
           </div>
 
         </div>
@@ -482,6 +531,49 @@ function CustomerProfileContent() {
                   <p className="text-[10px] text-slate-500 mt-1 max-w-[240px] mx-auto leading-relaxed">
                     Check in with Bhutri Essentials customer support to synchronize your skincare routine.
                   </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Purchased Products */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
+            <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-1.5">
+              <ShoppingBag className="w-3 h-3 text-slate-400" /> Synced Product Purchases
+            </h3>
+
+            <div className="space-y-3">
+              {purchases.length > 0 ? (
+                purchases.map((purchase: any, idx: number) => (
+                  <div 
+                    key={purchase.id || idx} 
+                    className="p-4 border border-slate-200/50 rounded-xl bg-slate-50/30 flex items-center justify-between gap-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500">
+                        <ShoppingBag className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-slate-900">{purchase.product_title}</h4>
+                        <p className="text-[10px] text-slate-400 font-semibold mt-0.5">
+                          {purchase.variant_title !== 'Default Title' ? purchase.variant_title : 'Standard Edition'}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="text-right">
+                      <p className="text-xs font-extrabold text-slate-950">
+                        {purchase.quantity}x {parseFloat(purchase.price) ? `₹${parseFloat(purchase.price).toFixed(2)}` : 'Free'}
+                      </p>
+                      <p className="text-[9px] text-slate-400 font-bold mt-0.5 flex items-center gap-1 justify-end">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Synced
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-6">
+                  <p className="text-xs text-slate-500 font-semibold italic">No order sync history found.</p>
                 </div>
               )}
             </div>

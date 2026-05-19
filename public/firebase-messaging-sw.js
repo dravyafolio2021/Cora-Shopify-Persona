@@ -15,7 +15,7 @@ self.addEventListener('push', function(event) {
     try {
       data = {
         notification: {
-          title: 'SkinPersona Daily Check-in',
+          title: 'Cora Daily Check-in',
           body: event.data ? event.data.text() : 'Time for your daily routine!'
         }
       };
@@ -32,13 +32,13 @@ self.addEventListener('push', function(event) {
     icon: notification.icon || '/icon-192x192.png',
     data: payload,
     actions: [
-      { action: 'applied', title: '✅ Applied' },
-      { action: 'later', title: '⏰ Remind me later' }
+      { action: 'yes', title: 'Yes, Done' },
+      { action: 'no', title: 'Not Yet' }
     ]
   };
 
   event.waitUntil(
-    self.registration.showNotification(notification.title || 'SkinPersona', options)
+    self.registration.showNotification(notification.title || 'Cora', options)
   );
 });
 
@@ -46,12 +46,13 @@ self.addEventListener('notificationclick', function(event) {
   event.notification.close();
   const data = event.notification.data || {};
 
-  if (event.action === 'applied' && data.jobId) {
+  if ((event.action === 'yes' || event.action === 'no') && data.jobId) {
+    const responded = event.action === 'yes';
     event.waitUntil(
-      fetch('/api/checkin/respond', {
+      fetch('/api/store/campaigns/respond', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jobId: data.jobId, responded: true })
+        body: JSON.stringify({ jobId: data.jobId, responded: responded })
       })
     );
   } else if (data.checkInUrl) {

@@ -36,14 +36,26 @@ export default function ChannelsSection() {
     (function() {
       const iframe = document.getElementById('cora-profile-iframe');
       
-      // 1. Try to find active customer ID safely (wrapped to prevent Shopify dry-run validation errors)
+      // 1. Resolve active customer ID from URL search query parameter (important for lock screen deep-links), Shopify Liquid customer context, or local device cache
       let customerId = "";
+      
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const queryId = urlParams.get('customerId');
+        if (queryId) {
+          customerId = queryId;
+        }
+      } catch (err) {
+        console.warn('URLSearchParams not supported or errored:', err);
+      }
+      
       {% if customer %}
+      if (!customerId) {
         customerId = "{{ customer.id }}";
+      }
       {% endif %}
       
       const storedId = localStorage.getItem('cora_storefront_customer_id');
-      
       if (!customerId && storedId) {
         customerId = storedId;
       }
