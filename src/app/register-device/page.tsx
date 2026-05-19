@@ -275,10 +275,10 @@ function RegisterDeviceContent() {
             <button
               onClick={unsubscribeDevice}
               disabled={unsubscribing}
-              className="w-full py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-xl text-xs font-bold hover:bg-red-100 transition-all flex items-center justify-center gap-2"
+              className="w-full py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-xl text-xs font-bold hover:bg-red-100 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               {unsubscribing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
-              ❌ Unsubscribe This Device
+              Unsubscribe This Device
             </button>
           </div>
         ) : (
@@ -323,10 +323,10 @@ function RegisterDeviceContent() {
                 <button
                   onClick={unsubscribeDevice}
                   disabled={unsubscribing}
-                  className="w-full py-3.5 bg-red-600 text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-red-600 text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {unsubscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                  ❌ Unsubscribe This Device
+                  Unsubscribe This Device
                 </button>
               </div>
             ) : (
@@ -341,9 +341,9 @@ function RegisterDeviceContent() {
                 ) : (
                   <button
                     onClick={requestPermissionAndSubscribe}
-                    className="w-full py-3.5 bg-[#111111] text-white rounded-xl text-sm font-bold hover:bg-[#333333] transition-all shadow-md active:scale-[0.98]"
+                    className="w-full py-3.5 bg-[#111111] text-white rounded-xl text-sm font-bold hover:bg-[#333333] transition-all shadow-md active:scale-[0.98] cursor-pointer"
                   >
-                    {isMobile ? '🔔 Subscribe Phone' : '🔔 Subscribe Laptop'}
+                    {isMobile ? 'Subscribe Phone Alerts' : 'Subscribe Screen Alerts'}
                   </button>
                 )}
               </>
@@ -351,7 +351,7 @@ function RegisterDeviceContent() {
 
             {permissionState === 'denied' && (
               <p className="text-[10px] text-red-500 font-medium">
-                ⚠️ Push permission is currently blocked. Please open your device browser settings, search for site settings, and allow notifications for Cora.
+                Push permission is currently blocked. Please open your device browser settings, search for site settings, and allow notifications for Cora.
               </p>
             )}
           </div>

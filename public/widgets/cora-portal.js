@@ -1,6 +1,7 @@
 /**
  * Cora Skin Portal - Branded Storefront Sync & Skincare Dashboard Widget
  * Dynamic customer notifications, skincare routine tracking, and embedded login console.
+ * Strictly no emojis, only custom vector SVG icons for maximum brand professionalism.
  */
 (function() {
   // 1. Extract current customer ID from the script tag or localStorage
@@ -24,8 +25,6 @@
   }
 
   // --- AUTO-LOGIN LOGIC ON ORDER PLACEMENT OR ACTIVE SESSION ---
-  // If a valid Shopify Customer ID is dynamically supplied by the storefront theme 
-  // (e.g. they are logged in or just placed an order!), we auto-log them into Cora!
   if (customerId && customerId !== storedCustomerId) {
     localStorage.setItem('cora_storefront_customer_id', customerId);
   } else if (!customerId && storedCustomerId) {
@@ -227,9 +226,8 @@
       align-items: center;
       gap: 12px;
     }
-    .streak-fire {
-      font-size: 32px;
-      animation: pulse 1.5s infinite;
+    .streak-fire-icon {
+      color: #EA580C;
     }
     .streak-info h4 {
       margin: 0;
@@ -283,10 +281,6 @@
       75% { transform: rotate(0deg); }
       100% { transform: rotate(0deg); }
     }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
   `;
 
   // 3. Inject CSS
@@ -301,7 +295,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
     </svg>
-    <span>Daily Skincare Sync</span>
+    <span>Skincare Portal</span>
     <span class="streak-indicator" style="display:none;">0</span>
   `;
   document.body.appendChild(badge);
@@ -314,12 +308,21 @@
       <button id="cora-portal-close">&times;</button>
       
       <div class="cora-header">
-        <h3>✨ Cora Skincare Portal</h3>
+        <h3>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 21l-.813-5.096L3 15l5.096-.813L9 9l.813 5.096L15 15l-5.188.904z" /></svg>
+          Cora Skincare Portal
+        </h3>
         <p>Bhutri Essentials routine tracker & device sync console</p>
         
         <div class="cora-tabs">
-          <button class="cora-tab-btn active" data-tab="dashboard">📊 Skincare Dashboard</button>
-          <button class="cora-tab-btn" data-tab="sync">🔔 Device Sync</button>
+          <button class="cora-tab-btn active" data-tab="dashboard">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width: 13px; height: 13px;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v5.25c0 .621-.504 1.125-1.125 1.125h-2.25A1.125 1.125 0 013 18.375v-5.25zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125v-9.75z" /></svg>
+            Skincare Dashboard
+          </button>
+          <button class="cora-tab-btn" data-tab="sync">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width: 13px; height: 13px;"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+            Device Sync
+          </button>
         </div>
       </div>
 
@@ -330,7 +333,9 @@
           <div class="cora-card">
             <div class="cora-card-title">Daily Check-in Streak</div>
             <div class="streak-grid">
-              <div class="streak-fire">🔥</div>
+              <div class="streak-fire-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width: 32px; height: 32px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" /></svg>
+              </div>
               <div class="streak-info">
                 <h4 id="cora-streak-text">0 Day Streak</h4>
                 <p>Check in daily to build your routine habits.</p>
@@ -341,7 +346,7 @@
           <div class="cora-card">
             <div class="cora-card-title">My Skincare Persona</div>
             <div class="persona-badge" id="cora-persona-badge">
-              🔑 Authenticating Profile...
+              Authenticating Profile...
             </div>
             <div style="margin-top: 10px; font-size: 12px; color: #4B5563;">
               Skin Type: <b id="cora-skin-type">Loading...</b><br/>
@@ -379,20 +384,17 @@
   // 6. Fetch Public Sync Details from Backend to hydrate Dashboard
   function hydrateWidget() {
     if (!customerId) {
-      // If customer is not logged in, hide tabs & headers to keep it minimal like a standard widget!
       if (headerEl) headerEl.style.display = 'none';
       if (tabsEl) tabsEl.style.display = 'none';
       return;
     }
 
-    // If logged in, restore clean styling
     if (headerEl) headerEl.style.display = 'block';
     if (tabsEl) tabsEl.style.display = 'flex';
 
     fetch(`${backendUrl}/api/public/customer/${customerId}`)
       .then(res => res.json())
       .then(data => {
-        // Update Streak badge on floating button
         const indicator = badge.querySelector('.streak-indicator');
         if (data.streak > 0) {
           indicator.textContent = data.streak;
@@ -401,15 +403,15 @@
           indicator.style.display = 'none';
         }
 
-        // Update Dashboard Streak
         document.getElementById('cora-streak-text').textContent = `${data.streak} Day Streak`;
 
-        // Update Persona Badge
-        document.getElementById('cora-persona-badge').innerHTML = `✨ ${data.persona || 'Skincare Enthusiast'}`;
+        document.getElementById('cora-persona-badge').innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width: 12px; height: 12px; margin-right: 4px; display: inline;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" /></svg>
+          ${data.persona || 'Skincare Enthusiast'}
+        `;
         document.getElementById('cora-skin-type').textContent = data.skin_type || 'Dry';
         document.getElementById('cora-concerns').textContent = (data.concerns || []).join(', ') || 'Hydration';
 
-        // Update Recommendations list
         const recBox = document.getElementById('cora-recommendations');
         recBox.innerHTML = '';
         if (data.recommendations && data.recommendations.length > 0) {
@@ -424,13 +426,11 @@
           });
         }
       })
-      .catch(err => console.warn('Cora Portal Widget: Failed to sync latest backend persona details:', err));
+      .catch(err => console.warn('Cora Portal Widget: Failed to sync details:', err));
   }
 
-  // Hydrate once immediately on page load
   hydrateWidget();
 
-  // 7. Modal & Tab toggling Logic
   const closeBtn = modal.querySelector('#cora-portal-close');
   const tabs = modal.querySelectorAll('.cora-tab-btn');
   const panels = modal.querySelectorAll('.cora-content-panel');
@@ -439,14 +439,12 @@
     modal.classList.add('active');
     hydrateWidget();
     
-    // Load appropriate page in the iframe
     const iframe = modal.querySelector('#cora-portal-iframe');
     if (customerId) {
-      // If customer is logged in, show device subscription console
-      iframe.src = `${portalUrl}/register-device?customerId=${customerId}`;
+      // If customer is logged in, show device subscription console or profile directly!
+      iframe.src = `${portalUrl}/customer-profile?customerId=${customerId}`;
       modal.querySelector('[data-tab="dashboard"]').click();
     } else {
-      // If NOT logged in, show custom minimal sign-in page
       iframe.src = `${portalUrl}/portal-login`;
       modal.querySelector('[data-tab="sync"]').click();
     }
@@ -462,7 +460,6 @@
     }
   });
 
-  // Tab switching
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       tabs.forEach(t => t.classList.remove('active'));
@@ -479,20 +476,25 @@
     if (event.data && event.data.type === 'cora-login-success') {
       const loggedInId = event.data.customerId;
       
-      // Persist the Shopify customer session inside the browser storefront context
       customerId = loggedInId;
       localStorage.setItem('cora_storefront_customer_id', loggedInId);
       
-      // Re-hydrate the Skincare Dashboard and redirect the iframe to the active device status checker
       hydrateWidget();
       
       const iframe = modal.querySelector('#cora-portal-iframe');
-      iframe.src = `${portalUrl}/register-device?customerId=${loggedInId}`;
+      iframe.src = `${portalUrl}/customer-profile?customerId=${loggedInId}`;
       
-      // Smoothly switch them back to the active Skincare Dashboard!
       setTimeout(() => {
         modal.querySelector('[data-tab="dashboard"]').click();
       }, 1000);
+    }
+    
+    // Close modal if logged out
+    if (event.data && event.data.type === 'cora-logout-success') {
+      customerId = null;
+      localStorage.removeItem('cora_storefront_customer_id');
+      hydrateWidget();
+      modal.classList.remove('active');
     }
   });
 })();
