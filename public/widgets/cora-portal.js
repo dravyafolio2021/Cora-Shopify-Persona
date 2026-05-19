@@ -4,6 +4,9 @@
  * Strictly no emojis, only custom vector SVG icons for maximum brand professionalism.
  */
 (function() {
+  // Disabled floater widget globally as requested by user
+  return;
+
   // 1. Extract current customer ID from the script tag or localStorage
   const scriptTag = document.currentScript || document.querySelector('script[src*="cora-portal.js"]');
   let customerId = scriptTag ? scriptTag.getAttribute('data-customer-id') : null;
