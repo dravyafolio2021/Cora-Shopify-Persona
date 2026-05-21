@@ -27,7 +27,7 @@ export default function ChannelsSection() {
     <iframe 
       id="cora-profile-iframe"
       src="https://corapersona.vercel.app/portal-login" 
-      style="width: 100%; height: 800px; border: none; border-radius: 24px; background: transparent; box-shadow: 0 4px 30px rgba(0,0,0,0.02);"
+      style="width: 100%; height: 1200px; border: none; border-radius: 24px; background: transparent; box-shadow: 0 4px 30px rgba(0,0,0,0.02);"
       loading="lazy">
     </iframe>
   </div>
