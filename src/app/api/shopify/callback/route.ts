@@ -62,8 +62,20 @@ export async function GET(req: NextRequest) {
     const detail = errorBody?.error_description || errorBody?.error || error.message;
     console.error('Shopify OAuth Callback Error:', detail);
     
-    // Support JSON objects inside detail
-    const detailStr = typeof detail === 'object' ? JSON.stringify(detail) : String(detail);
+    let detailStr = '';
+    if (typeof detail === 'object') {
+      if (detail.message === 'A server error has occurred' || detail.code === '500') {
+        detailStr = 'The Vercel backend API crashed (500 Server Error). Please check Vercel Logs for cora-persona-backend.';
+      } else {
+        detailStr = JSON.stringify(detail);
+      }
+    } else {
+      detailStr = String(detail);
+      if (detailStr.includes('ECONNREFUSED')) {
+         detailStr = 'Failed to connect to the backend server (ECONNREFUSED). Is it running?';
+      }
+    }
+    
     return NextResponse.redirect(new URL(`/dashboard/settings?error=oauth_failed&details=${encodeURIComponent(detailStr)}`, req.url));
   }
 }
