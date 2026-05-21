@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
 export async function GET(req: NextRequest) {
-  const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+  const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://cora-persona-backend.vercel.app';
 
   try {
     const response = await axios.get(`${backendUrl}/api/push/public-key`);

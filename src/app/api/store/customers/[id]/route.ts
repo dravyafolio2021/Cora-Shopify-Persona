@@ -3,7 +3,7 @@ import { getCustomerById, getOrdersByCustomer, computePersonas } from '@/lib/sho
 import axios from 'axios';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+  const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://cora-persona-backend.vercel.app';
 
   try {
     const { id } = await params;

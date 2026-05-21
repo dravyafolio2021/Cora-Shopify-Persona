@@ -8,7 +8,7 @@ type RouteContext = {
 
 export async function PATCH(req: NextRequest, context: RouteContext) {
   const { purchaseId } = await context.params;
-  const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+  const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://cora-persona-backend.vercel.app';
   const jwtSecret = process.env.JWT_SECRET || 'super_secret_jwt_key';
 
   try {

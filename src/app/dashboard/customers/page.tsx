@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { useDebounce } from 'use-debounce';
 import { PERSONA_META, PERSONA_COLORS, PERSONA_ICONS } from '@/lib/personas';
+import Link from 'next/link';
 
 export default function CustomersPage() {
   const [search, setSearch] = useState('');
@@ -223,12 +224,22 @@ export default function CustomersPage() {
               </span>
             )}
           </div>
-          <button 
-            onClick={() => setSelectedCustomerId(null)}
-            className="p-1.5 rounded-lg text-[#616161] hover:bg-[#EAEAEA] transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {selectedCustomerId && (
+              <Link 
+                href={`/dashboard/customers/${selectedCustomerId}`}
+                className="px-3 py-1.5 bg-[#111111] text-white text-[11px] font-bold rounded-lg hover:bg-black transition-colors flex items-center gap-1.5 mr-2"
+              >
+                View Full Profile <ArrowRight className="w-3 h-3" />
+              </Link>
+            )}
+            <button 
+              onClick={() => setSelectedCustomerId(null)}
+              className="p-1.5 rounded-lg text-[#616161] hover:bg-[#EAEAEA] transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Drawer Scrollable Content Area */}
