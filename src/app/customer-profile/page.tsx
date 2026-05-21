@@ -357,7 +357,7 @@ function CustomerProfileContent() {
   }
 
   return (
-    <div className={`min-h-screen bg-[#fcfbf9] font-sans antialiased text-slate-900 select-none pb-12 ${isIframe ? 'p-0' : 'p-6'}`}>
+    <div className={`min-h-screen bg-[#fcfbf9] font-sans antialiased text-slate-900 select-none pb-12 ${isIframe ? 'px-3 md:px-0 py-4 md:py-0' : 'p-6'}`}>
       
       {/* CHECK-IN MODAL */}
       {showCheckinModal && (
