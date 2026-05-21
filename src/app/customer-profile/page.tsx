@@ -2,6 +2,8 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { Playfair_Display } from 'next/font/google';
+const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '600', '700', '900'] });
 import axios from 'axios';
 import { 
   Bell, 
@@ -321,7 +323,7 @@ function CustomerProfileContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center font-sans">
+      <div className="min-h-screen bg-[#faf9f6] flex flex-col items-center justify-center p-6 text-center font-sans">
         <Loader2 className="w-8 h-8 text-slate-800 animate-spin mb-3" />
         <p className="text-xs text-slate-500 font-semibold tracking-wide">HYDRATING SKINCARE SEGMENTS...</p>
       </div>
@@ -330,7 +332,7 @@ function CustomerProfileContent() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto font-sans">
+      <div className="min-h-screen bg-[#faf9f6] flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto font-sans">
         <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-600 mb-4 border border-red-100">
           <AlertTriangle className="w-5 h-5" />
         </div>
@@ -343,7 +345,7 @@ function CustomerProfileContent() {
   }
 
   return (
-    <div className={`min-h-screen bg-slate-50 font-sans antialiased text-slate-900 select-none pb-12 ${isIframe ? 'p-0' : 'p-6'}`}>
+    <div className={`min-h-screen bg-[#faf9f6] font-sans antialiased text-slate-900 select-none pb-12 ${isIframe ? 'p-0' : 'p-6'}`}>
       
       {/* CHECK-IN MODAL */}
       {showCheckinModal && (
@@ -359,7 +361,7 @@ function CustomerProfileContent() {
               <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20">
                 <Sparkles className="w-6 h-6 text-emerald-400" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-1">Skincare Check-In</h3>
+              <h3 className={`text-2xl font-bold text-white mb-1 ${playfair.className}`}>Skincare Check-In</h3>
               <p className="text-sm text-slate-300 font-medium">
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
               </p>
@@ -374,7 +376,7 @@ function CustomerProfileContent() {
                 <button 
                   onClick={() => submitCheckin(true)}
                   disabled={checkinSubmitting}
-                  className="w-full py-3.5 px-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold tracking-wide transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-70"
+                  className="w-full py-3.5 px-4 bg-[#b89768] hover:bg-[#a3855a] text-white rounded-xl font-bold tracking-wide transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-70"
                 >
                   {checkinSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                   Yes, I completed it!
@@ -395,31 +397,6 @@ function CustomerProfileContent() {
       )}
 
       
-      {/* CHECK-IN MODAL */}
-      {showCheckinModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-3xl shadow-xl w-full max-w-sm overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="bg-slate-900 px-6 py-8 text-center relative">
-              <button onClick={() => setShowCheckinModal(false)} className="absolute top-4 right-4 text-white/50 hover:text-white"><XCircle className="w-5 h-5" /></button>
-              <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20"><Sparkles className="w-6 h-6 text-emerald-400" /></div>
-              <h3 className="text-xl font-bold text-white mb-1">Skincare Check-In</h3>
-              <p className="text-sm text-slate-300 font-medium">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
-            </div>
-            <div className="p-6">
-              <p className="text-sm text-slate-600 text-center mb-6 font-medium leading-relaxed">Did you complete your personalized skincare routine for today? Consistency is the key to glowing skin!</p>
-              <div className="space-y-3">
-                <button onClick={() => submitCheckin(true)} disabled={checkinSubmitting} className="w-full py-3.5 px-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-70">
-                  {checkinSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />} Yes, I completed it!
-                </button>
-                <button onClick={() => submitCheckin(false)} disabled={checkinSubmitting} className="w-full py-3.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-70">
-                  <Clock className="w-4 h-4" /> Not yet, remind me later
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Outer Branding Container (Hidden if embedded inside theme iFrame) */}
       {!isIframe && (
         <header className="max-w-4xl mx-auto w-full flex justify-between items-center py-6 border-b border-slate-200 mb-8">
@@ -451,7 +428,7 @@ function CustomerProfileContent() {
                 <User className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-sm font-extrabold text-slate-900">
+                <h2 className={`text-xl font-extrabold text-slate-900 ${playfair.className}`}>
                   {customer?.first_name} {customer?.last_name}
                 </h2>
                 <p className="text-[10px] text-slate-500 font-semibold mt-0.5">{customer?.email || customer?.phone}</p>
@@ -462,7 +439,7 @@ function CustomerProfileContent() {
               <span className="px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200/40 text-[9px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
                 <Sparkle className="w-2.5 h-2.5 text-slate-900" /> {persona}
               </span>
-              <span className="px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200 text-[9px] font-bold text-slate-600 uppercase tracking-wider">
+              <span className="px-2.5 py-1 rounded-full bg-[#faf9f6] border border-slate-200 text-[9px] font-bold text-slate-600 uppercase tracking-wider">
                 Skin: {skinType}
               </span>
             </div>
@@ -484,11 +461,11 @@ function CustomerProfileContent() {
             </h3>
             
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 shadow-inner">
+              <div className="w-12 h-12 rounded-xl bg-[#fdfaf6] border border-[#f3e8d6] flex items-center justify-center text-[#b89768] shadow-inner">
                 <Flame className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-xl font-black text-slate-900 leading-none">{streak} Day Streak</h4>
+                <h4 className={`text-2xl font-black text-slate-900 leading-none ${playfair.className}`}>{streak} Day Streak</h4>
                 <p className="text-[10px] text-slate-500 font-semibold mt-1 leading-relaxed">
                   Log in daily on your synchronized devices to grow your skincare habit score.
                 </p>
@@ -512,7 +489,7 @@ function CustomerProfileContent() {
                   type="time" 
                   value={preferredTime} 
                   onChange={handleTimeUpdate}
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-slate-400 focus:bg-white transition-all disabled:opacity-70"
+                  className="w-full bg-[#faf9f6] border border-slate-200 text-slate-700 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-slate-400 focus:bg-white transition-all disabled:opacity-70"
                   disabled={updatingTime}
                 />
                 {updatingTime && (
@@ -524,9 +501,9 @@ function CustomerProfileContent() {
 
             {isDeviceRegistered ? (
               <div className="space-y-4">
-                <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-[10px] leading-relaxed text-emerald-800">
+                <div className="p-3 bg-[#fdfaf6] border border-[#f3e8d6] rounded-xl text-[10px] leading-relaxed text-emerald-800">
                   <div className="flex gap-1.5 font-bold mb-0.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> This Device Synchronised
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#a3855a]" /> This Device Synchronised
                   </div>
                   You will receive real-time push reminders on this screen when your skin routines are updated!
                 </div>
@@ -541,7 +518,7 @@ function CustomerProfileContent() {
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="p-3 bg-slate-50 border border-slate-200/60 rounded-xl text-[10px] text-slate-500 leading-relaxed">
+                <div className="p-3 bg-[#faf9f6] border border-slate-200/60 rounded-xl text-[10px] text-slate-500 leading-relaxed">
                   <div className="flex gap-1.5 font-bold text-slate-700 mb-0.5">
                     <Shield className="w-3.5 h-3.5 text-slate-600" /> Device Connection Status
                   </div>
@@ -592,19 +569,19 @@ function CustomerProfileContent() {
                       {subs.map((sub: any, i: number) => {
                         const isCurrent = sub.endpoint === deviceEndpoint;
                         return (
-                          <div key={i} className={`flex items-center justify-between p-2.5 rounded-lg border ${isCurrent ? 'bg-emerald-50/50 border-emerald-100' : 'bg-slate-50 border-slate-200/50'}`}>
+                          <div key={i} className={`flex items-center justify-between p-2.5 rounded-lg border ${isCurrent ? 'bg-[#fdfaf6]/50 border-[#f3e8d6]' : 'bg-[#faf9f6] border-slate-200/50'}`}>
                             <div className="flex items-center gap-2">
                               {sub.deviceName?.toLowerCase().includes('phone') || sub.deviceName?.toLowerCase().includes('mobile') ? (
-                                <Smartphone className={`w-3.5 h-3.5 ${isCurrent ? 'text-emerald-500' : 'text-slate-400'}`} />
+                                <Smartphone className={`w-3.5 h-3.5 ${isCurrent ? 'text-[#b89768]' : 'text-slate-400'}`} />
                               ) : (
-                                <Laptop className={`w-3.5 h-3.5 ${isCurrent ? 'text-emerald-500' : 'text-slate-400'}`} />
+                                <Laptop className={`w-3.5 h-3.5 ${isCurrent ? 'text-[#b89768]' : 'text-slate-400'}`} />
                               )}
                               <div>
                                 <p className="text-[10px] font-bold text-slate-700">{sub.deviceName || 'Unknown Device'}</p>
-                                {isCurrent && <p className="text-[9px] text-emerald-600 font-bold mt-0.5">Current Screen</p>}
+                                {isCurrent && <p className="text-[9px] text-[#a3855a] font-bold mt-0.5">Current Screen</p>}
                               </div>
                             </div>
-                            <CheckCircle2 className={`w-3.5 h-3.5 ${isCurrent ? 'text-emerald-500' : 'text-slate-300'}`} />
+                            <CheckCircle2 className={`w-3.5 h-3.5 ${isCurrent ? 'text-[#b89768]' : 'text-slate-300'}`} />
                           </div>
                         );
                       })}
@@ -616,57 +593,14 @@ function CustomerProfileContent() {
             })()}
           </div>
 
-          {/* Routine Check-In History */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
-            <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-              <Calendar className="w-3 h-3 text-slate-400" /> Routine Check-In History
-            </h3>
-
-            <div className="space-y-3 max-h-[260px] overflow-y-auto pr-1">
-              {checkins.length > 0 ? (
-                checkins.map((checkin: any, idx: number) => (
-                  <div 
-                    key={checkin.id || idx} 
-                    className="p-3 border border-slate-100 rounded-xl bg-white flex items-center justify-between gap-3 text-[10px]"
-                  >
-                    <div className="min-w-0">
-                      <p className="font-bold text-slate-800 truncate">
-                        {checkin.product_title || 'Daily Skincare'}
-                      </p>
-                      <p className="text-[9px] text-slate-400 font-semibold mt-0.5">
-                        {checkin.scheduled_at ? new Date(checkin.scheduled_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Today'}
-                      </p>
-                    </div>
-                    
-                    <div>
-                      {checkin.responded ? (
-                        <span className="px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-[9px] font-bold text-emerald-700 uppercase tracking-wider flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Done
-                        </span>
-                      ) : (
-                        <span className="px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200 text-[9px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                          <XCircle className="w-3 h-3 text-slate-400" /> Missed
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-4">
-                  <p className="text-[10px] text-slate-400 font-semibold italic">No check-in responses recorded yet.</p>
-                </div>
-              )}
-            </div>
-          </div>
-
           <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.01)] mt-6">
             <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-1.5"><Calendar className="w-3 h-3 text-slate-400" /> Skincare Habit Log</h3>
             <div className="space-y-3">
               {checkins.length > 0 ? (
                 checkins.map((chk: any, idx: number) => (
-                  <div key={chk.id || idx} className="p-3.5 border border-slate-200/50 rounded-xl bg-slate-50/30 flex items-center justify-between gap-4">
+                  <div key={chk.id || idx} className="p-3.5 border border-slate-200/50 rounded-xl bg-[#faf9f6]/30 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-lg border flex items-center justify-center ${chk.responded ? 'bg-emerald-50 border-emerald-100 text-emerald-500' : 'bg-amber-50 border-amber-100 text-amber-500'}`}>
+                      <div className={`w-9 h-9 rounded-lg border flex items-center justify-center ${chk.responded ? 'bg-[#fdfaf6] border-[#f3e8d6] text-[#b89768]' : 'bg-amber-50 border-amber-100 text-amber-500'}`}>
                         {chk.responded ? <CheckCircle2 className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                       </div>
                       <div>
@@ -676,7 +610,7 @@ function CustomerProfileContent() {
                     </div>
                     {chk.responded && chk.streak_day > 0 && (
                       <div className="text-right flex flex-col items-end">
-                        <span className="px-2 py-1 bg-orange-100 text-orange-600 rounded-md text-[9px] font-extrabold tracking-wider uppercase flex items-center gap-1"><Flame className="w-3 h-3" /> Day {chk.streak_day}</span>
+                        <span className="px-2 py-1 bg-[#f3e8d6] text-[#b89768] rounded-md text-[9px] font-extrabold tracking-wider uppercase flex items-center gap-1"><Flame className="w-3 h-3" /> Day {chk.streak_day}</span>
                       </div>
                     )}
                   </div>
@@ -701,7 +635,7 @@ function CustomerProfileContent() {
             <div className="flex flex-wrap gap-2 mb-4">
               {concerns.length > 0 ? (
                 concerns.map((concern, idx) => (
-                  <span key={idx} className="px-3 py-1 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 uppercase tracking-wide">
+                  <span key={idx} className="px-3 py-1 bg-[#faf9f6] border border-slate-200 rounded-xl text-xs font-bold text-slate-700 uppercase tracking-wide">
                     {concern}
                   </span>
                 ))
@@ -710,7 +644,7 @@ function CustomerProfileContent() {
               )}
             </div>
             
-            <div className="p-3 bg-slate-50 border border-slate-200/40 rounded-xl text-[10px] text-slate-500 leading-relaxed flex gap-1.5">
+            <div className="p-3 bg-[#faf9f6] border border-slate-200/40 rounded-xl text-[10px] text-slate-500 leading-relaxed flex gap-1.5">
               <Info className="w-3.5 h-3.5 text-slate-600 mt-0.5 flex-shrink-0" />
               <span>
                 These targeted routine categories are dynamically generated based on active customer purchases, skincare segment data, and custom dashboard configurations.
@@ -733,7 +667,7 @@ function CustomerProfileContent() {
                   >
                     <div className="space-y-1">
                       <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">Step {idx + 1}</h4>
-                      <h5 className="text-sm font-extrabold text-slate-900">{rec.title}</h5>
+                      <h5 className={`text-base font-extrabold text-slate-900 ${playfair.className}`}>{rec.title}</h5>
                       <p className="text-xs text-slate-500 leading-relaxed max-w-md">{rec.desc}</p>
                     </div>
                     {rec.product_handle && (
@@ -749,7 +683,7 @@ function CustomerProfileContent() {
                 ))
               ) : (
                 <div className="text-center py-8">
-                  <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center mx-auto text-slate-400 mb-3">
+                  <div className="w-10 h-10 rounded-full bg-[#faf9f6] border border-slate-200 flex items-center justify-center mx-auto text-slate-400 mb-3">
                     <Sparkles className="w-5 h-5" />
                   </div>
                   <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">No Active Recommendations Loaded</h4>
@@ -772,7 +706,7 @@ function CustomerProfileContent() {
                 purchases.map((purchase: any, idx: number) => (
                   <div 
                     key={purchase.id || idx} 
-                    className="p-4 border border-slate-200/50 rounded-xl bg-slate-50/30 flex items-center justify-between gap-4"
+                    className="p-4 border border-slate-200/50 rounded-xl bg-[#faf9f6]/30 flex items-center justify-between gap-4"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500">
@@ -791,7 +725,7 @@ function CustomerProfileContent() {
                         {purchase.quantity}x {parseFloat(purchase.price) ? `₹${parseFloat(purchase.price).toFixed(2)}` : 'Free'}
                       </p>
                       <p className="text-[9px] text-slate-400 font-bold mt-0.5 flex items-center gap-1 justify-end">
-                        <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Synced
+                        <CheckCircle2 className="w-3 h-3 text-[#b89768]" /> Synced
                       </p>
                     </div>
                   </div>
@@ -804,77 +738,6 @@ function CustomerProfileContent() {
             </div>
           </div>
 
-          {/* Habit Log / Check-in History */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.01)] mt-6">
-            <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-1.5">
-              <Calendar className="w-3 h-3 text-slate-400" /> Skincare Habit Log
-            </h3>
-
-            <div className="space-y-3">
-              {checkins.length > 0 ? (
-                checkins.map((chk: any, idx: number) => (
-                  <div 
-                    key={chk.id || idx} 
-                    className="p-3.5 border border-slate-200/50 rounded-xl bg-slate-50/30 flex items-center justify-between gap-4"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-lg border flex items-center justify-center ${chk.responded ? 'bg-emerald-50 border-emerald-100 text-emerald-500' : 'bg-amber-50 border-amber-100 text-amber-500'}`}>
-                        {chk.responded ? <CheckCircle2 className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-slate-900">
-                          {chk.responded ? 'Routine Completed' : 'Routine Skipped/Delayed'}
-                        </h4>
-                        <p className="text-[10px] text-slate-400 font-semibold mt-0.5">
-                          {chk.responded_at ? new Date(chk.responded_at).toLocaleString() : 'Pending'}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    {chk.responded && chk.streak_day > 0 && (
-                      <div className="text-right flex flex-col items-end">
-                        <span className="px-2 py-1 bg-orange-100 text-orange-600 rounded-md text-[9px] font-extrabold tracking-wider uppercase flex items-center gap-1">
-                          <Flame className="w-3 h-3" /> Day {chk.streak_day}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-6">
-                  <p className="text-xs text-slate-500 font-semibold italic">No check-in history found. Start your routine today!</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.01)] mt-6">
-            <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-1.5"><Calendar className="w-3 h-3 text-slate-400" /> Skincare Habit Log</h3>
-            <div className="space-y-3">
-              {checkins.length > 0 ? (
-                checkins.map((chk: any, idx: number) => (
-                  <div key={chk.id || idx} className="p-3.5 border border-slate-200/50 rounded-xl bg-slate-50/30 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-lg border flex items-center justify-center ${chk.responded ? 'bg-emerald-50 border-emerald-100 text-emerald-500' : 'bg-amber-50 border-amber-100 text-amber-500'}`}>
-                        {chk.responded ? <CheckCircle2 className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-slate-900">{chk.responded ? 'Routine Completed' : 'Routine Skipped/Delayed'}</h4>
-                        <p className="text-[10px] text-slate-400 font-semibold mt-0.5">{chk.responded_at ? new Date(chk.responded_at).toLocaleString() : 'Pending'}</p>
-                      </div>
-                    </div>
-                    {chk.responded && chk.streak_day > 0 && (
-                      <div className="text-right flex flex-col items-end">
-                        <span className="px-2 py-1 bg-orange-100 text-orange-600 rounded-md text-[9px] font-extrabold tracking-wider uppercase flex items-center gap-1"><Flame className="w-3 h-3" /> Day {chk.streak_day}</span>
-                      </div>
-                    )}
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-6"><p className="text-xs text-slate-500 font-semibold italic">No check-in history found. Start your routine today!</p></div>
-              )}
-            </div>
-          </div>
 
         </div>
 
@@ -887,7 +750,7 @@ function CustomerProfileContent() {
 export default function CustomerProfilePage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center font-sans">
+      <div className="min-h-screen bg-[#faf9f6] flex flex-col items-center justify-center p-6 text-center font-sans">
         <Loader2 className="w-8 h-8 text-slate-800 animate-spin mb-3" />
         <p className="text-xs text-slate-500 font-semibold tracking-wide">HYDRATING SKINCARE SEGMENTS...</p>
       </div>
