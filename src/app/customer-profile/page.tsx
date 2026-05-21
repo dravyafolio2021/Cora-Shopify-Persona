@@ -428,7 +428,7 @@ function CustomerProfileContent() {
       )}
 
       {/* Main Core Responsive Dashboard */}
-      <main className="max-w-4xl mx-auto w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+      <main className="max-w-5xl mx-auto w-full grid grid-cols-1 md:grid-cols-3 gap-6">
         
         {/* Left Column: Customer Profile & Streak (1 Col) */}
         <div className="md:col-span-1 space-y-6">
