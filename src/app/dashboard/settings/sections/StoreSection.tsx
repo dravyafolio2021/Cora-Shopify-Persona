@@ -80,7 +80,9 @@ export default function StoreSection({ storeData }: { storeData: any }) {
             </div>
             <Row label="Connected Since" hint="OAuth token was granted on this date">
               <span className="text-sm text-[#374151]">
-                {new Date(store.connectedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                {store.connectedAt && !isNaN(new Date(store.connectedAt).getTime()) 
+                  ? new Date(store.connectedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
+                  : 'Just now'}
               </span>
             </Row>
             <Row label="Store Domain">
