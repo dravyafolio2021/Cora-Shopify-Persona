@@ -2,8 +2,8 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Playfair_Display } from 'next/font/google';
-const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '600', '700', '900'] });
+import { Lato } from 'next/font/google';
+const lato = Lato({ subsets: ['latin'], weight: ['400', '700', '900'] });
 import axios from 'axios';
 import { 
   Bell, 
@@ -373,7 +373,7 @@ function CustomerProfileContent() {
               <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20">
                 <Sparkles className="w-6 h-6 text-emerald-400" />
               </div>
-              <h3 className={`text-2xl font-bold text-white mb-1 ${playfair.className}`}>Skincare Check-In</h3>
+              <h3 className={`text-2xl font-bold text-white mb-1 ${lato.className}`}>Skincare Check-In</h3>
               <p className="text-sm text-slate-300 font-medium">
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
               </p>
@@ -440,7 +440,7 @@ function CustomerProfileContent() {
                 <User className="w-5 h-5" />
               </div>
               <div>
-                <h2 className={`text-xl font-extrabold text-slate-900 ${playfair.className}`}>
+                <h2 className={`text-xl font-extrabold text-slate-900 ${lato.className}`}>
                   {customer?.first_name} {customer?.last_name}
                 </h2>
                 <p className="text-[10px] text-slate-500 font-semibold mt-0.5">{customer?.email || customer?.phone}</p>
@@ -477,7 +477,7 @@ function CustomerProfileContent() {
                 <Flame className="w-6 h-6" />
               </div>
               <div>
-                <h4 className={`text-2xl font-black text-slate-900 leading-none ${playfair.className}`}>{streak} Day Streak</h4>
+                <h4 className={`text-2xl font-black text-slate-900 leading-none ${lato.className}`}>{streak} Day Streak</h4>
                 <p className="text-[10px] text-slate-500 font-semibold mt-1 leading-relaxed">
                   Log in daily on your synchronized devices to grow your skincare habit score.
                 </p>
@@ -679,7 +679,7 @@ function CustomerProfileContent() {
                   >
                     <div className="space-y-1">
                       <h4 className="text-[10px] font-bold text-[#b89768] uppercase tracking-widest">Step {idx + 1}</h4>
-                      <h5 className={`text-base font-extrabold text-slate-900 ${playfair.className}`}>{rec.title}</h5>
+                      <h5 className={`text-base font-extrabold text-slate-900 ${lato.className}`}>{rec.title}</h5>
                       <p className="text-xs text-slate-500 leading-relaxed max-w-md">{rec.desc}</p>
                     </div>
                     {rec.product_handle && (
