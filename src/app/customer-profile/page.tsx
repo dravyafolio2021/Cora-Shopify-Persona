@@ -30,13 +30,9 @@ function CustomerProfileContent() {
   const customerId = searchParams.get('customerId');
   const checkinJobId = searchParams.get('checkin_job');
   
-  const checkinJobId = searchParams.get('checkin_job');
-  
   const [customer, setCustomer] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showCheckinModal, setShowCheckinModal] = useState(false);
-  const [checkinSubmitting, setCheckinSubmitting] = useState(false);
   
   const [showCheckinModal, setShowCheckinModal] = useState(false);
   const [checkinSubmitting, setCheckinSubmitting] = useState(false);
@@ -299,26 +295,6 @@ function CustomerProfileContent() {
   };
 
 
-  const submitCheckin = async (responded: boolean) => {
-    if (!checkinJobId) return;
-    setCheckinSubmitting(true);
-    try {
-      await axios.post('https://cora-persona-backend.vercel.app/api/checkin/respond', { jobId: checkinJobId, responded });
-      setCheckins(prev => [{ id: 'temp-' + Date.now(), streak_day: responded ? streak + 1 : streak, responded, responded_at: new Date().toISOString() }, ...prev]);
-      if (responded) setStreak(s => s + 1);
-      setShowCheckinModal(false);
-      if (typeof window !== 'undefined') {
-        const url = new URL(window.location.href);
-        url.searchParams.delete('checkin_job');
-        window.history.replaceState({}, '', url.toString());
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Failed to record check-in');
-    } finally {
-      setCheckinSubmitting(false);
-    }
-  };
 
   const handleLogout = () => {
     localStorage.removeItem('cora_storefront_customer_id');
