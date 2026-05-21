@@ -138,6 +138,18 @@ function CustomerProfileContent() {
     if (checkinJobId) {
       setShowCheckinModal(true);
     }
+
+    // Emit iframe height continuously to the parent Shopify window to prevent ugly double scrollbars
+    const resizeObserver = new ResizeObserver(() => {
+      if (window.parent && window !== window.parent) {
+        window.parent.postMessage({
+          type: 'cora-resize',
+          height: document.documentElement.scrollHeight
+        }, '*');
+      }
+    });
+    resizeObserver.observe(document.body);
+    return () => resizeObserver.disconnect();
   }, [customerId, checkinJobId]);
 
   const handleTimeUpdate = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -323,7 +335,7 @@ function CustomerProfileContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#faf9f6] flex flex-col items-center justify-center p-6 text-center font-sans">
+      <div className="min-h-screen bg-[#fcfbf9] flex flex-col items-center justify-center p-6 text-center font-sans">
         <Loader2 className="w-8 h-8 text-slate-800 animate-spin mb-3" />
         <p className="text-xs text-slate-500 font-semibold tracking-wide">HYDRATING SKINCARE SEGMENTS...</p>
       </div>
@@ -332,7 +344,7 @@ function CustomerProfileContent() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#faf9f6] flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto font-sans">
+      <div className="min-h-screen bg-[#fcfbf9] flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto font-sans">
         <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-600 mb-4 border border-red-100">
           <AlertTriangle className="w-5 h-5" />
         </div>
@@ -345,7 +357,7 @@ function CustomerProfileContent() {
   }
 
   return (
-    <div className={`min-h-screen bg-[#faf9f6] font-sans antialiased text-slate-900 select-none pb-12 ${isIframe ? 'p-0' : 'p-6'}`}>
+    <div className={`min-h-screen bg-[#fcfbf9] font-sans antialiased text-slate-900 select-none pb-12 ${isIframe ? 'p-0' : 'p-6'}`}>
       
       {/* CHECK-IN MODAL */}
       {showCheckinModal && (
@@ -376,7 +388,7 @@ function CustomerProfileContent() {
                 <button 
                   onClick={() => submitCheckin(true)}
                   disabled={checkinSubmitting}
-                  className="w-full py-3.5 px-4 bg-[#b89768] hover:bg-[#a3855a] text-white rounded-xl font-bold tracking-wide transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-70"
+                  className="w-full py-3.5 px-4 bg-[#b89768] hover:bg-[#a3855a] text-white rounded-2xl font-bold tracking-wide transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-70"
                 >
                   {checkinSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                   Yes, I completed it!
@@ -385,7 +397,7 @@ function CustomerProfileContent() {
                 <button 
                   onClick={() => submitCheckin(false)}
                   disabled={checkinSubmitting}
-                  className="w-full py-3.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold tracking-wide transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                  className="w-full py-3.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl font-bold tracking-wide transition-all flex items-center justify-center gap-2 disabled:opacity-70"
                 >
                   <Clock className="w-4 h-4" />
                   Not yet, remind me later
@@ -401,7 +413,7 @@ function CustomerProfileContent() {
       {!isIframe && (
         <header className="max-w-4xl mx-auto w-full flex justify-between items-center py-6 border-b border-slate-200 mb-8">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white">
+            <div className="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center text-white">
               <Sparkle className="w-4 h-4" />
             </div>
             <span className="font-bold text-sm tracking-wider uppercase">BHUTRI ESSENTIALS PORTAL</span>
@@ -422,9 +434,9 @@ function CustomerProfileContent() {
         <div className="md:col-span-1 space-y-6">
           
           {/* Brand/User Card */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.01)] relative">
+          <div className="bg-gradient-to-b from-[#fcebd4]/60 to-[#fdf7ee]/80 border border-[#fcebd4] rounded-3xl p-6 shadow-sm relative overflow-hidden">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200/60 flex items-center justify-center text-slate-700">
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200/60 flex items-center justify-center text-slate-700">
                 <User className="w-5 h-5" />
               </div>
               <div>
@@ -439,7 +451,7 @@ function CustomerProfileContent() {
               <span className="px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200/40 text-[9px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
                 <Sparkle className="w-2.5 h-2.5 text-slate-900" /> {persona}
               </span>
-              <span className="px-2.5 py-1 rounded-full bg-[#faf9f6] border border-slate-200 text-[9px] font-bold text-slate-600 uppercase tracking-wider">
+              <span className="px-2.5 py-1 rounded-full bg-[#fcfbf9] border border-slate-200 text-[9px] font-bold text-slate-600 uppercase tracking-wider">
                 Skin: {skinType}
               </span>
             </div>
@@ -447,7 +459,7 @@ function CustomerProfileContent() {
             {isIframe && (
               <button 
                 onClick={handleLogout}
-                className="w-full mt-4 py-2 border border-slate-200 hover:border-slate-300 text-[10px] font-bold text-slate-600 rounded-xl hover:text-slate-900 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                className="w-full mt-4 py-2 border border-slate-200 hover:border-slate-300 text-[10px] font-bold text-slate-600 rounded-2xl hover:text-slate-900 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
                 <LogOut className="w-3.5 h-3.5" /> Sign Out from Sync
               </button>
@@ -455,13 +467,13 @@ function CustomerProfileContent() {
           </div>
 
           {/* Daily Streak Card */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
+          <div className="bg-gradient-to-br from-[#eadbef]/50 to-[#f9f5fa]/80 border border-[#eadbef] rounded-3xl p-6 shadow-sm">
             <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1">
               <Calendar className="w-3 h-3 text-slate-400" /> Skincare Streak
             </h3>
             
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fdfaf6] border border-[#f3e8d6] flex items-center justify-center text-[#b89768] shadow-inner">
+              <div className="w-12 h-12 rounded-2xl bg-[#fdfaf6] border border-[#f3e8d6] flex items-center justify-center text-[#b89768] shadow-inner">
                 <Flame className="w-6 h-6" />
               </div>
               <div>
@@ -474,7 +486,7 @@ function CustomerProfileContent() {
           </div>
 
           {/* Device Sync Registry */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
+          <div className="bg-gradient-to-br from-[#e5ead5]/60 to-[#f3f0e0]/80 border border-[#e5ead5] rounded-3xl p-6 shadow-sm">
             <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
               <Bell className="w-3 h-3 text-slate-400" /> Device Push Service
             </h3>
@@ -489,7 +501,7 @@ function CustomerProfileContent() {
                   type="time" 
                   value={preferredTime} 
                   onChange={handleTimeUpdate}
-                  className="w-full bg-[#faf9f6] border border-slate-200 text-slate-700 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-slate-400 focus:bg-white transition-all disabled:opacity-70"
+                  className="w-full bg-[#fcfbf9] border border-slate-200 text-slate-700 text-xs rounded-2xl px-3 py-2.5 focus:outline-none focus:border-slate-400 focus:bg-white transition-all disabled:opacity-70"
                   disabled={updatingTime}
                 />
                 {updatingTime && (
@@ -501,7 +513,7 @@ function CustomerProfileContent() {
 
             {isDeviceRegistered ? (
               <div className="space-y-4">
-                <div className="p-3 bg-[#fdfaf6] border border-[#f3e8d6] rounded-xl text-[10px] leading-relaxed text-emerald-800">
+                <div className="p-3 bg-[#fdfaf6] border border-[#f3e8d6] rounded-2xl text-[10px] leading-relaxed text-emerald-800">
                   <div className="flex gap-1.5 font-bold mb-0.5">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#a3855a]" /> This Device Synchronised
                   </div>
@@ -510,7 +522,7 @@ function CustomerProfileContent() {
                 <button
                   onClick={unsubscribeDevice}
                   disabled={unsubscribing}
-                  className="w-full py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-xl text-xs font-bold hover:bg-red-100 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="w-full py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-2xl text-xs font-bold hover:bg-red-100 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   {unsubscribing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <XCircle className="w-3.5 h-3.5" />}
                   Unsubscribe Current Screen
@@ -518,7 +530,7 @@ function CustomerProfileContent() {
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="p-3 bg-[#faf9f6] border border-slate-200/60 rounded-xl text-[10px] text-slate-500 leading-relaxed">
+                <div className="p-3 bg-[#fcfbf9] border border-slate-200/60 rounded-2xl text-[10px] text-slate-500 leading-relaxed">
                   <div className="flex gap-1.5 font-bold text-slate-700 mb-0.5">
                     <Shield className="w-3.5 h-3.5 text-slate-600" /> Device Connection Status
                   </div>
@@ -528,14 +540,14 @@ function CustomerProfileContent() {
                 {subscribing ? (
                   <button
                     disabled
-                    className="w-full py-3 bg-slate-900 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5"
+                    className="w-full py-3 bg-slate-900 text-white rounded-2xl text-xs font-bold flex items-center justify-center gap-1.5"
                   >
                     <Loader2 className="w-3.5 h-3.5 animate-spin" /> Registering Browser...
                   </button>
                 ) : (
                   <button
                     onClick={requestPermissionAndSubscribe}
-                    className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-[0.98]"
+                    className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-[0.98]"
                   >
                     <Bell className="w-3.5 h-3.5" />
                     {isMobile ? 'Subscribe Phone Alert' : 'Subscribe Screen Alerts'}
@@ -543,7 +555,7 @@ function CustomerProfileContent() {
                 )}
 
                 {permissionState === 'denied' && (
-                  <div className="p-2.5 rounded-lg bg-red-50 border border-red-200/60 text-[9px] text-red-600 font-semibold leading-relaxed flex gap-1 items-start">
+                  <div className="p-2.5 rounded-xl bg-red-50 border border-red-200/60 text-[9px] text-red-600 font-semibold leading-relaxed flex gap-1 items-start">
                     <AlertTriangle className="w-3 h-3 mt-0.5 flex-shrink-0" />
                     <span>Browser blocked push notifications. Reset notifications in site settings to connect.</span>
                   </div>
@@ -569,7 +581,7 @@ function CustomerProfileContent() {
                       {subs.map((sub: any, i: number) => {
                         const isCurrent = sub.endpoint === deviceEndpoint;
                         return (
-                          <div key={i} className={`flex items-center justify-between p-2.5 rounded-lg border ${isCurrent ? 'bg-[#fdfaf6]/50 border-[#f3e8d6]' : 'bg-[#faf9f6] border-slate-200/50'}`}>
+                          <div key={i} className={`flex items-center justify-between p-2.5 rounded-xl border ${isCurrent ? 'bg-[#fdfaf6]/50 border-[#f3e8d6]' : 'bg-[#fcfbf9] border-slate-200/50'}`}>
                             <div className="flex items-center gap-2">
                               {sub.deviceName?.toLowerCase().includes('phone') || sub.deviceName?.toLowerCase().includes('mobile') ? (
                                 <Smartphone className={`w-3.5 h-3.5 ${isCurrent ? 'text-[#b89768]' : 'text-slate-400'}`} />
@@ -593,14 +605,14 @@ function CustomerProfileContent() {
             })()}
           </div>
 
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.01)] mt-6">
+          <div className="bg-white border border-[#e5e1d8] rounded-3xl p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)] mt-8">
             <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-1.5"><Calendar className="w-3 h-3 text-slate-400" /> Skincare Habit Log</h3>
             <div className="space-y-3">
               {checkins.length > 0 ? (
                 checkins.map((chk: any, idx: number) => (
-                  <div key={chk.id || idx} className="p-3.5 border border-slate-200/50 rounded-xl bg-[#faf9f6]/30 flex items-center justify-between gap-4">
+                  <div key={chk.id || idx} className="p-3.5 border border-slate-200/50 rounded-2xl bg-[#fcfbf9]/30 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-lg border flex items-center justify-center ${chk.responded ? 'bg-[#fdfaf6] border-[#f3e8d6] text-[#b89768]' : 'bg-amber-50 border-amber-100 text-amber-500'}`}>
+                      <div className={`w-9 h-9 rounded-xl border flex items-center justify-center ${chk.responded ? 'bg-[#fdfaf6] border-[#f3e8d6] text-[#b89768]' : 'bg-amber-50 border-amber-100 text-amber-500'}`}>
                         {chk.responded ? <CheckCircle2 className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                       </div>
                       <div>
@@ -627,7 +639,7 @@ function CustomerProfileContent() {
         <div className="md:col-span-2 space-y-6">
           
           {/* Skin concerns & Details */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
+          <div className="bg-gradient-to-b from-[#c3e3f7]/40 to-[#eaf5fc]/70 border border-[#c3e3f7]/60 rounded-3xl p-7 shadow-sm">
             <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1">
               <TrendingUp className="w-3 h-3 text-slate-400" /> Routine Focus Areas
             </h3>
@@ -635,7 +647,7 @@ function CustomerProfileContent() {
             <div className="flex flex-wrap gap-2 mb-4">
               {concerns.length > 0 ? (
                 concerns.map((concern, idx) => (
-                  <span key={idx} className="px-3 py-1 bg-[#faf9f6] border border-slate-200 rounded-xl text-xs font-bold text-slate-700 uppercase tracking-wide">
+                  <span key={idx} className="px-3 py-1 bg-[#fcfbf9] border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 uppercase tracking-wide">
                     {concern}
                   </span>
                 ))
@@ -644,7 +656,7 @@ function CustomerProfileContent() {
               )}
             </div>
             
-            <div className="p-3 bg-[#faf9f6] border border-slate-200/40 rounded-xl text-[10px] text-slate-500 leading-relaxed flex gap-1.5">
+            <div className="p-3 bg-[#fcfbf9] border border-slate-200/40 rounded-2xl text-[10px] text-slate-500 leading-relaxed flex gap-1.5">
               <Info className="w-3.5 h-3.5 text-slate-600 mt-0.5 flex-shrink-0" />
               <span>
                 These targeted routine categories are dynamically generated based on active customer purchases, skincare segment data, and custom dashboard configurations.
@@ -653,7 +665,7 @@ function CustomerProfileContent() {
           </div>
 
           {/* Skincare Recommendations Cards */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
+          <div className="bg-white border border-[#e5e1d8] rounded-3xl p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
             <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-1.5">
               <ShoppingBag className="w-3 h-3 text-slate-400" /> Active Skincare Routine
             </h3>
@@ -663,10 +675,10 @@ function CustomerProfileContent() {
                 recommendations.map((rec: any, idx: number) => (
                   <div 
                     key={idx} 
-                    className="p-4 border border-slate-200/60 rounded-xl hover:border-slate-300 transition-all bg-white relative flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                    className="p-4 border border-slate-200/60 rounded-2xl hover:border-slate-300 transition-all bg-white relative flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                   >
                     <div className="space-y-1">
-                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">Step {idx + 1}</h4>
+                      <h4 className="text-[10px] font-bold text-[#b89768] uppercase tracking-widest">Step {idx + 1}</h4>
                       <h5 className={`text-base font-extrabold text-slate-900 ${playfair.className}`}>{rec.title}</h5>
                       <p className="text-xs text-slate-500 leading-relaxed max-w-md">{rec.desc}</p>
                     </div>
@@ -674,7 +686,7 @@ function CustomerProfileContent() {
                       <a 
                         href={`https://ekg7ga-00.myshopify.com/products/${rec.product_handle}`}
                         target="_parent"
-                        className="py-2 px-3 border border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white rounded-xl text-[10px] font-bold tracking-wider uppercase text-center transition-all cursor-pointer whitespace-nowrap"
+                        className="py-2 px-3 border border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white rounded-2xl text-[10px] font-bold tracking-wider uppercase text-center transition-all cursor-pointer whitespace-nowrap"
                       >
                         Buy Product
                       </a>
@@ -683,7 +695,7 @@ function CustomerProfileContent() {
                 ))
               ) : (
                 <div className="text-center py-8">
-                  <div className="w-10 h-10 rounded-full bg-[#faf9f6] border border-slate-200 flex items-center justify-center mx-auto text-slate-400 mb-3">
+                  <div className="w-10 h-10 rounded-full bg-[#fcfbf9] border border-slate-200 flex items-center justify-center mx-auto text-slate-400 mb-3">
                     <Sparkles className="w-5 h-5" />
                   </div>
                   <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">No Active Recommendations Loaded</h4>
@@ -696,7 +708,7 @@ function CustomerProfileContent() {
           </div>
 
           {/* Purchased Products */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
+          <div className="bg-white border border-[#e5e1d8] rounded-3xl p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
             <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-1.5">
               <ShoppingBag className="w-3 h-3 text-slate-400" /> Synced Product Purchases
             </h3>
@@ -706,10 +718,10 @@ function CustomerProfileContent() {
                 purchases.map((purchase: any, idx: number) => (
                   <div 
                     key={purchase.id || idx} 
-                    className="p-4 border border-slate-200/50 rounded-xl bg-[#faf9f6]/30 flex items-center justify-between gap-4"
+                    className="p-4 border border-slate-200/50 rounded-2xl bg-[#fcfbf9]/30 flex items-center justify-between gap-4"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500">
+                      <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500">
                         <ShoppingBag className="w-5 h-5" />
                       </div>
                       <div>
@@ -750,7 +762,7 @@ function CustomerProfileContent() {
 export default function CustomerProfilePage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#faf9f6] flex flex-col items-center justify-center p-6 text-center font-sans">
+      <div className="min-h-screen bg-[#fcfbf9] flex flex-col items-center justify-center p-6 text-center font-sans">
         <Loader2 className="w-8 h-8 text-slate-800 animate-spin mb-3" />
         <p className="text-xs text-slate-500 font-semibold tracking-wide">HYDRATING SKINCARE SEGMENTS...</p>
       </div>

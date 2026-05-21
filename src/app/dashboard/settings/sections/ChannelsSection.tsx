@@ -78,6 +78,10 @@ export default function ChannelsSection() {
           localStorage.removeItem('cora_storefront_customer_id');
           iframe.src = "https://corapersona.vercel.app/portal-login";
         }
+        if (event.data && event.data.type === 'cora-resize') {
+          // Adjust iframe height dynamically to prevent ugly scrolling
+          iframe.style.height = event.data.height + 'px';
+        }
       });
     })();
   </script>
